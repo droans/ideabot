@@ -1,3 +1,4 @@
+from typing import Iterable
 import logging
 from src.models import IdeaModel
 import json
@@ -48,27 +49,39 @@ def create_idea_file_if_not_exists():
     with open(IDEA_FILE, "w") as f:
       f.write("[]")
 
+
 def filter_ideas(
-  server: str | None = None,
-  channel: str | None = None,
-  user: str | None = None,
-  category: str | None = None,
-  name: str | None = None,
+  server: str | list[str] | None = None,
+  channel: str | list[str] | None = None,
+  user: str | list[str] | None = None,
+  category: str | list[str] | None = None,
+  name: str | list[str] | None = None,
   ) -> list[IdeaModel]:
   """Returns all filtered ideas."""
   ideas = get_ideas()
   if server:
-    ideas = [idea for idea in ideas if idea.server == server]
+    servers = _coerce_list(server)
+    ideas = [idea for idea in ideas if idea.server in servers]
   if channel:
-    ideas = [idea for idea in ideas if idea.channel == channel]
+    channels = _coerce_list(channel)
+    ideas = [idea for idea in ideas if idea.channel in channels]
   if user:
-    ideas = [idea for idea in ideas if idea.user == user]
+    users = _coerce_list(user)
+    ideas = [idea for idea in ideas if idea.user in users]
   if category:
-    ideas = [idea for idea in ideas if idea.category == category]
+    categories = _coerce_list(category)
+    ideas = [idea for idea in ideas if idea.category in categories]
   if name:
-    ideas = [idea for idea in ideas if idea.idea_name == name]
+    names = _coerce_list(name)
+    ideas = [idea for idea in ideas if idea.idea_name in names]
   return ideas
 
+def _coerce_list(item: str | int | float | list) -> list:
+  """Convert `item` into a list with one member."""
+  if isinstance(item, str) or isinstance(item, int) or isinstance(item, float):
+    return [item]
+  if isinstance(item, Iterable):
+    return list(item)
   
 def format_ideas(ideas: list[IdeaModel]) -> str:
   """Format ideas for a message."""
