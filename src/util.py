@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def get_token() -> str:
   """Return the token set in the .env file."""
-  load_dotenv(".env")
+  load_dotenv()
   token = os.environ.get("DISCORD_TOKEN")
   assert isinstance(token, str)
   return token
