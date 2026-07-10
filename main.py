@@ -1,4 +1,4 @@
-from src.mentions.mention import add_mention_listener
+from src.listeners import add_mention_listener
 import logging
 from src.commands import remember_idea_config  # noqa: F401
 from src.commands import fetch_ideas_config  # noqa: F401
