@@ -1,7 +1,9 @@
 from src.listeners import add_mention_listener
 import logging
-from src.commands import remember_idea_config
-from src.commands import fetch_ideas_config 
+from src.commands import (
+  remember_idea_config,
+  fetch_ideas_config,
+)
 from src.bot import create_bot
 from src.util import get_token
 
