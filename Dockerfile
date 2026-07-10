@@ -1,4 +1,5 @@
 FROM alpine:3.24
+LABEL org.opencontainers.image.source=https://github.com/droans/ideabot
 ENV LANG="C.UTF-8"
 RUN --mount=type=cache,target=/var/cache/apk,sharing=locked \
     apk add --update-cache --virtual .build-deps \

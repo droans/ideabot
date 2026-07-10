@@ -67,3 +67,15 @@ Result: Ideabot remembers that you saved the idea "Let's take over the world" wi
 ```
 
 Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control".
+
+## Creating and using the bot
+
+1. Navigate to the [Discord Developer's Portal](https://discord.com/developers/applications). Create a new application and name it "ideabot" (or any other name you would prefer).
+2. In the Discord Developer's Portal page for your bot, navigate to "Installation". Set the install link to "None" and save.
+3. Navigate to the "Bot" tab. Enable "Message Content Intent" and save. 
+4. Still in the "Bot" tab, copy the token listed under "Token". If it is not visible, click "Reset Token" and follow the prompt. Save this and never share it - this is the private Discord token that we will need to set up the container.
+5. Use the [docker-compose.yml](./docker-compose.yml) file to help you set up your container. The environment variable `DISCORD_TOKEN` will be the token from the previous step. Go ahead and spin this up.
+6. Back in the Discord Developer's Portal, navigate to the "OAuth2" tab: 
+  a. In the "OAuth2 URL Generator" section, select the scopes "bot" and "applications.commands"
+  b. In the "Bot Permissions" section, select "Manage Messages", "Read Message History", and "Use Slash Commands". 
+7. Navigate to the URL generated at the bottom and grant your bot permission on the proper server.
