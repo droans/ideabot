@@ -25,7 +25,7 @@ Replies with a Thumbs-up emoji if successful. If there's an error, it will reply
 | name     | str  | no       | An optional name to give to your idea       |
 | category | str  | no       | An optional category to assign to your idea |
 
-### `/remember`
+#### `/remember`
 
 Fetch your stored ideas. Will only return ideas stored by you in the same channel and server.
 
@@ -39,12 +39,12 @@ Replies with all filtered ideas.
 | name     | str  | no       | An optional name to give to your idea       |
 | category | str  | no       | An optional category to assign to your idea |
 
-### `/search name`
+#### `/search name`
 
 Search ideas by idea name. The bot will give you a dropdown so you can select the idea name(s).
 
 
-### `/search categories`
+#### `/search categories`
 
 Search ideas by idea category. The bot will give you a dropdown so you can select the idea category/categories.
 
