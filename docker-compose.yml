@@ -1,0 +1,8 @@
+services:
+  ideabot:
+    container_name: ideabot
+    image: ghcr.io/droans/ideabot:latest
+    volumes:
+      - path/to/ideabot/ideas.json:/app/ideas.json
+    environment:
+      DISCORD_TOKEN: ${IDEABOT_DISCORD_TOKEN}
