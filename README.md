@@ -39,6 +39,15 @@ Replies with all filtered ideas.
 | name     | str  | no       | An optional name to give to your idea       |
 | category | str  | no       | An optional category to assign to your idea |
 
+### `/search name`
+
+Search ideas by idea name. The bot will give you a dropdown so you can select the idea name(s).
+
+
+### `/search categories`
+
+Search ideas by idea category. The bot will give you a dropdown so you can select the idea category/categories.
+
 ### Mentions
 
 You won't always have the idea. Or you might but you don't want to (or forget) to use the slash command. Fortunately, there's another option.
