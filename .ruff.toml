@@ -1,0 +1,4 @@
+[lint.per-file-ignores]
+"main.py" = [
+    "F401",
+]
