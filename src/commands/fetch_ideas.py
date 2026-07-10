@@ -7,8 +7,6 @@ from interactions import SlashContext, SlashCommandOption, OptionType, SlashComm
 async def fetch_ideas(
   ctx: SlashContext,
   idea_name: str | None = None,
-  # server: str | None = None,
-  # user: str | None = None,
   category: str | None = None,
 ) -> None:
   """Fetch ideas."""
