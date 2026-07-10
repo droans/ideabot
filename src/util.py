@@ -48,3 +48,56 @@ def create_idea_file_if_not_exists():
     with open(IDEA_FILE, "w") as f:
       f.write("[]")
 
+def filter_ideas(
+  server: str | None = None,
+  channel: str | None = None,
+  user: str | None = None,
+  category: str | None = None,
+  name: str | None = None,
+  ) -> list[IdeaModel]:
+  """Returns all filtered ideas."""
+  ideas = get_ideas()
+  if server:
+    ideas = [idea for idea in ideas if idea.server == server]
+  if channel:
+    ideas = [idea for idea in ideas if idea.channel == channel]
+  if user:
+    ideas = [idea for idea in ideas if idea.user == user]
+  if category:
+    ideas = [idea for idea in ideas if idea.category == category]
+  if name:
+    ideas = [idea for idea in ideas if idea.idea_name == name]
+  return ideas
+
+  
+def format_ideas(ideas: list[IdeaModel]) -> str:
+  """Format ideas for a message."""
+  return "\n~~---------------------------------------------~~\n\n".join([_format_idea(idea) for idea in ideas])
+  
+
+def _format_idea(
+  idea: IdeaModel,
+  include_idea_name: bool = True,
+  include_category: bool = True,
+  include_server: bool = False,
+  include_channel: bool = False,
+  include_user: bool = False,
+  ) -> str:
+  """Formats an idea for a message response."""
+  headers = []
+  if include_idea_name and idea.idea_name:
+    headers.append(f"## 💡 Idea: {idea.idea_name}\n")
+  if include_server and idea.server:
+    headers.append(f"**Server:** {idea.server}")
+  if include_channel and idea.channel:
+    headers.append(f"**Channel:** {idea.channel}")
+  if include_user and idea.user:
+    headers.append(f"**User:** {idea.user}")
+  if include_category and idea.category:
+    headers.append(f"**Category:** {idea.category}")
+  return f"""{"\n".join(headers)}
+  
+  ### Idea:
+  ```
+  {idea.idea}
+  ```"""
