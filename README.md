@@ -19,11 +19,12 @@ Replies with a Thumbs-up emoji if successful. If there's an error, it will reply
 
 **Arguments:**
 
-| Argument | Type | Required | Description                                 |
-|----------|------|----------|---------------------------------------------|
-| idea     | str  | yes      | The description of your idea                |
-| name     | str  | no       | An optional name to give to your idea       |
-| category | str  | no       | An optional category to assign to your idea |
+| Argument    | Type | Required | Description                                                       |
+|-------------|------|----------|-------------------------------------------------------------------|
+| idea        | str  | yes      | The description of your idea                                      |
+| name        | str  | no       | An optional name to give to your idea                             |
+| category    | str  | no       | An optional category to assign to your idea                       |
+| shared_with | str  | no       | Add the idea to another user's ideas list in addition to your own |
 
 #### `/remember`
 
@@ -89,6 +90,13 @@ Result: Ideabot remembers that you saved the idea "Let's take over the world" wi
 ```
 
 Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control".
+
+```
+@anotheruser: Let's take over the world
+↳ @you: @ideabot domination, World Control @thirduser @fourthuser
+```
+
+Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control". It also saves it for @thirduser and @fourthuser. 
 
 ## API
 
