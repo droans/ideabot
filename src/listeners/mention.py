@@ -22,6 +22,10 @@ async def on_message(event: MessageCreate) -> None:
   if message.author.bot:
     logger.debug("Got bot message, ignoring")
     return
+  bot_mention_prefix = f"<@{bot_user}>"
+  if not message.content.strip().startswith(bot_mention_prefix):
+    logger.debug("Bot may have been mentioned but message wasn't for bot, ignoring.")
+    return
   
   original_message = await message.fetch_referenced_message()
   if original_message:
