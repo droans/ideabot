@@ -1,6 +1,7 @@
+from sqlalchemy import CheckConstraint
 from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
-from sqlalchemy.dialects.sqlite import INTEGER, TEXT
+from sqlalchemy.dialects.sqlite import INTEGER, TEXT, BOOLEAN
 from sqlalchemy.orm import Mapped, mapped_column
 
 class IdeaModel(BaseModel):
@@ -22,7 +23,11 @@ class BaseIdeaFilterModel(BaseModel):
 
 class IdeaFilterModelWithUser(BaseIdeaFilterModel):
   """Model for filtering ideas by user."""
-  user: str | list[str] | None = None
+  user: str | list[str]
+
+class IdeaFilterModelWithAPIKey(BaseIdeaFilterModel):
+  """Model for filtering ideas by API key"""
+  api_key: str
 
 
 class Base(DeclarativeBase):
@@ -40,3 +45,16 @@ class IdeasTable(Base):
   user: Mapped[str] = mapped_column(TEXT, nullable=False)
   category: Mapped[str] = mapped_column(TEXT, nullable=True)
   idea_name: Mapped[str] = mapped_column(TEXT, nullable=True)
+
+
+class UserTable(Base):
+
+  __tablename__ = "USERS"
+
+  name: Mapped[str] = mapped_column(TEXT, nullable=False, unique=True, primary_key=True)
+  apikey: Mapped[int] = mapped_column(INTEGER, nullable=True)
+  admin: Mapped[bool] = mapped_column(
+    BOOLEAN,
+    CheckConstraint("admin in (0,1)"),
+    nullable=False,
+  )

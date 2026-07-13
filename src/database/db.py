@@ -1,9 +1,9 @@
+from src.database.util import create_idea_table, create_user_table
 from typing import cast
 import logging
 from pathlib import Path
 from src.const import SQLITE_CONN_PROTO, DEFAULT_DB_PATH
-from sqlalchemy import create_engine, Index, Engine
-from src.models import IdeasTable
+from sqlalchemy import create_engine, Engine
 
 logger = logging.getLogger(__name__)
 class IdeabotDatabase:
@@ -30,12 +30,10 @@ class IdeabotDatabase:
 
   def initialize_db(self):
     """Initialize database if it does not yet exist."""
-    logger.info("Creating table at {tbl}")
+    logger.debug("Creating table at {tbl}")
     self._create_engine()
-    tbl = IdeasTable
-    logger.info(dir(tbl))
-    tbl.__table__.create(self._engine)  # ty:ignore[unresolved-attribute]
-    Index("IDX_USER_SERVER_CHANNEL", "user", "server", "channel")
-    Index("IDX_USER", "user")
-    Index("IDX_USER_SERVER_CHANNEL_CATEGORY", "user", "server", "channel", "category")
-    Index("IDX_USER_SERVER_CHANNEL_NAME", "user", "server", "channel", "name")
+    create_idea_table(self.engine)
+    admin_token = create_user_table(self.engine)
+    logger.info(f"⚠️⚠️⚠️ Admin token: `{admin_token}` ⚠️⚠️⚠️")
+    del admin_token
+

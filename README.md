@@ -77,6 +77,12 @@ Result: Ideabot remembers that you saved the idea "Let's take over the world" wi
 
 Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control".
 
+## API
+
+Ideabot comes with a built-in API which binds to `0.0.0.0:12345`. All endpoints require a key. All `/admin` endpoints require a key belonging to an admin.
+
+If the database does not yet exist, a key will be generated for you and displayed in the logs. 
+
 ## Creating and using the bot
 
 1. Navigate to the [Discord Developer's Portal](https://discord.com/developers/applications). Create a new application and name it "ideabot" (or any other name you would prefer).

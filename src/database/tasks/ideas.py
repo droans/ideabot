@@ -1,8 +1,9 @@
 """Tasks related to ideas."""
+from src.database.tasks.users import validate_key_return_user
 import logging
 from sqlalchemy.orm import Session
 from src.util import _coerce_list
-from src.models import IdeasTable, IdeaModel, IdeaFilterModelWithUser
+from src.models import IdeasTable, IdeaModel, IdeaFilterModelWithUser, IdeaFilterModelWithAPIKey
 from sqlalchemy import Engine, select, insert
 
 logger = logging.getLogger(__name__)
@@ -10,7 +11,7 @@ logger = logging.getLogger(__name__)
 def retrieve_ideas(
   engine: Engine,
   filters: IdeaFilterModelWithUser,
-):
+) -> list[IdeaModel]:
   """Retrieve ideas from database."""
   stmt = select(
     IdeasTable.server,
@@ -47,9 +48,21 @@ def retrieve_ideas(
     )
   with Session(engine) as session:
     result = session.execute(stmt).all()
-    logger.info([idea._asdict() for idea in result])
     return [IdeaModel.model_validate(idea._asdict()) for idea in result]
 
+def retrieve_ideas_by_key(
+  engine: Engine,
+  filters: IdeaFilterModelWithAPIKey,
+) -> list[IdeaModel]:
+  """Return all ideas for user by API key."""
+  user = validate_key_return_user(engine, filters.api_key)
+  if not user:
+    return []
+  dumped = filters.model_dump()
+  dumped.pop("api_key")
+  dumped["user"] = user
+  model = IdeaFilterModelWithUser.model_validate(dumped)
+  return retrieve_ideas(engine, model)
 
 
 def add_idea(engine: Engine, idea: IdeaModel):
