@@ -1,7 +1,6 @@
 from typing import Iterable
 import logging
 from src.models import IdeaModel
-import json
 from pathlib import Path
 from src.const import IDEA_FILE_NAME
 import interactions
@@ -24,62 +23,6 @@ def create_bot() -> interactions.Client:
   token = get_token()
   return interactions.Client(token=token)
 
-def save_idea(idea: IdeaModel) -> None:
-  """Saves an idea to the ideas JSON file."""
-  ideas = get_ideas() + [idea]
-  json_ideas = [idea.model_dump() for idea in ideas]
-  with open(IDEA_FILE, "w") as f:
-    f.write(json.dumps(json_ideas, indent=4))
-
-
-
-  
-def get_ideas() -> list[IdeaModel]:
-  """Retrieve the ideas stored."""
-  create_idea_file_if_not_exists()
-  with open(IDEA_FILE) as f:
-    data = json.loads(f.read())
-    return [IdeaModel.model_validate(idea) for idea in data]
-
-
-def create_idea_file_if_not_exists():
-  """Create the idea file if it does not exist yet."""
-  if not IDEA_FILE.exists():
-    # Create an empty file
-    with open(IDEA_FILE, "w") as f:
-      f.write("[]")
-
-
-def filter_ideas(
-  server: str | list[str] | None = None,
-  channel: str | list[str] | None = None,
-  user: str | list[str] | None = None,
-  category: str | list[str] | None = None,
-  name: str | list[str] | None = None,
-  ) -> list[IdeaModel]:
-  """Returns all filtered ideas."""
-  ideas = get_ideas()
-  if server:
-    servers = _coerce_list(server)
-    logger.debug(f"Filtering on server `{servers}`")
-    ideas = [idea for idea in ideas if idea.server in servers]
-  if channel:
-    channels = _coerce_list(channel)
-    logger.debug(f"Filtering on channel `{channels}`")
-    ideas = [idea for idea in ideas if idea.channel in channels]
-  if user:
-    users = _coerce_list(user)
-    logger.debug(f"Filtering on user `{users}`")
-    ideas = [idea for idea in ideas if idea.user in users]
-  if category:
-    categories = _coerce_list(category)
-    logger.debug(f"Filtering on category `{categories}`")
-    ideas = [idea for idea in ideas if idea.category in categories]
-  if name:
-    names = _coerce_list(name)
-    logger.debug(f"Filtering on name `{names}`")
-    ideas = [idea for idea in ideas if idea.idea_name in names]
-  return ideas
 
 def _coerce_list(item: str | int | float | list) -> list:
   """Convert `item` into a list with one member."""
