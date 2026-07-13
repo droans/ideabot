@@ -1,4 +1,5 @@
 """Fetch ideas."""
+from src.models import IdeaFilterModel
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 from src.util import format_ideas
@@ -44,21 +45,17 @@ class FetchIdeas:
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModel(
       server=server_name,
       channel=channel_name,
       user=user,
       category=category,
-      name=idea_name
+      idea_name=idea_name,
     )
-    # ideas = filter_ideas(
-    #   server=server_name,
-    #   channel=channel_name,
-    #   user=user,
-    #   category=category,
-    #   name=idea_name
-    # )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter,
+    )
     await ctx.send(format_ideas(ideas))
 
 

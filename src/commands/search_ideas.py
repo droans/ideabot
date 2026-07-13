@@ -2,7 +2,7 @@ from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 import logging
 from interactions import StringSelectMenu, SlashContext, SlashCommand, Client
-from src.models import IdeaModel
+from src.models import IdeaModel, IdeaFilterModel
 
 logger = logging.getLogger(__name__)
 
@@ -37,11 +37,14 @@ class SearchIdeas:
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModel(
       server=server_name,
       channel=channel_name,
       user=user,
+    )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter
     )
     component = create_name_search_form(ideas)
     await ctx.send("Search your ideas", components=component)
@@ -57,11 +60,14 @@ class SearchIdeas:
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModel(
       server=server_name,
       channel=channel_name,
       user=user,
+    )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter,
     )
     component = create_category_search_form(ideas)
     await ctx.send("Search your ideas", components=component)

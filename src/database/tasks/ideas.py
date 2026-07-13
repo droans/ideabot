@@ -2,18 +2,14 @@
 import logging
 from sqlalchemy.orm import Session
 from src.util import _coerce_list
-from src.models import IdeasTable, IdeaModel
+from src.models import IdeasTable, IdeaModel, IdeaFilterModel
 from sqlalchemy import Engine, select, insert
 
 logger = logging.getLogger(__name__)
 
 def retrieve_ideas(
   engine: Engine,
-  server: str | list[str] | None = None,
-  channel: str | list[str] | None = None,
-  user: str | list[str] | None = None,
-  category: str | list[str] | None = None,
-  name: str | list[str] | None = None,
+  filters: IdeaFilterModel,
 ):
   """Retrieve ideas from database."""
   stmt = select(
@@ -24,28 +20,28 @@ def retrieve_ideas(
     IdeasTable.category,
     IdeasTable.idea_name,
   )
-  if server and not server == "All":
-    server = _coerce_list(server)
+  if filters.server and not filters.server == "All":
+    server = _coerce_list(filters.server)
     stmt = stmt.where(
       IdeasTable.server.in_(server)
     )
-  if channel and not channel == "All":
-    channel = _coerce_list(channel)
+  if filters.channel and not filters.channel == "All":
+    channel = _coerce_list(filters.channel)
     stmt = stmt.where(
       IdeasTable.channel.in_(channel)
     )
-  if user and not user == "All":
-    user = _coerce_list(user)
+  if filters.user and not filters.user == "All":
+    user = _coerce_list(filters.user)
     stmt = stmt.where(
       IdeasTable.user.in_(user)
     )
-  if category and not category == "All":
-    category = _coerce_list(category)
+  if filters.category and not filters.category == "All":
+    category = _coerce_list(filters.category)
     stmt = stmt.where(
       IdeasTable.category.in_(category)
     )
-  if name and not name == "All":
-    name = _coerce_list(name)
+  if filters.idea_name and not filters.idea_name == "All":
+    name = _coerce_list(filters.idea_name)
     stmt = stmt.where(
       IdeasTable.idea_name.in_(name)
     )
@@ -55,6 +51,7 @@ def retrieve_ideas(
     return [IdeaModel.model_validate(idea._asdict()) for idea in result]
 
 
+
 def add_idea(engine: Engine, idea: IdeaModel):
   """Add an idea."""
   stmt = insert(IdeasTable)
@@ -62,3 +59,4 @@ def add_idea(engine: Engine, idea: IdeaModel):
     session.execute(stmt, [idea.model_dump()])
     session.commit()
   logger.info("Added idea to database.")
+
