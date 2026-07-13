@@ -1,9 +1,9 @@
 """Listeners."""
 
-from .components import add_component_listener
-from .mention import add_mention_listener
+from .components import ComponentsListener
+from .mention import MentionsListener
 
 __all__ = (
-  "add_component_listener",
-  "add_mention_listener",
+  "ComponentsListener",
+  "MentionsListener",
 )

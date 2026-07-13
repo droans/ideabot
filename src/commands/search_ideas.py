@@ -1,44 +1,69 @@
+from src.db import IdeabotDatabase, retrieve_ideas
 import logging
-from src.util import filter_ideas
-from interactions import StringSelectMenu, SlashContext, SlashCommand
+from interactions import StringSelectMenu, SlashContext, SlashCommand, Client
 from src.models import IdeaModel
 
 logger = logging.getLogger(__name__)
 
-async def search_ideas_by_name(
-  ctx: SlashContext
-) -> None:
-  """Search ideas."""
-  user = ctx.user.global_name
-  server = ctx.guild
-  channel = ctx.channel
-  server_name = server.name if server and isinstance(server.name, str) else None
-  channel_name = channel.name if channel and isinstance(channel.name, str) else None
-  ideas = filter_ideas(
-    server=server_name,
-    channel=channel_name,
-    user=user,
-  )
-  component = create_name_search_form(ideas)
-  await ctx.send("Search your ideas", components=component)
+class SearchIdeas:
+  """Class to hold function to search ideas."""
+  def __init__(self, db: IdeabotDatabase, bot: Client):
+    """Initialize class."""
+    self._db = db
+    search_ideas_categories_config = SlashCommand(
+      name="search",
+      description="Search my ideas",
+      callback=self.search_ideas_by_category,
+      sub_cmd_name="categories",
+      sub_cmd_description="Search by category"
+    )
+    search_ideas_names_config = SlashCommand(
+      name="search",
+      description="Search my ideas",
+      callback=self.search_ideas_by_name,
+      sub_cmd_name="name",
+      sub_cmd_description="Search by name"
+    )
+    bot.add_command(search_ideas_categories_config)
+    bot.add_command(search_ideas_names_config)
+  async def search_ideas_by_name(
+    self,
+    ctx: SlashContext
+  ) -> None:
+    """Search ideas."""
+    user = ctx.user.global_name
+    server = ctx.guild
+    channel = ctx.channel
+    server_name = server.name if server and isinstance(server.name, str) else None
+    channel_name = channel.name if channel and isinstance(channel.name, str) else None
+    ideas = retrieve_ideas(
+      self._db.engine,
+      server=server_name,
+      channel=channel_name,
+      user=user,
+    )
+    component = create_name_search_form(ideas)
+    await ctx.send("Search your ideas", components=component)
 
 
-async def search_ideas_by_category(
-  ctx: SlashContext
-) -> None:
-  """Search ideas."""
-  user = ctx.user.global_name
-  server = ctx.guild
-  channel = ctx.channel
-  server_name = server.name if server and isinstance(server.name, str) else None
-  channel_name = channel.name if channel and isinstance(channel.name, str) else None
-  ideas = filter_ideas(
-    server=server_name,
-    channel=channel_name,
-    user=user,
-  )
-  component = create_category_search_form(ideas)
-  await ctx.send("Search your ideas", components=component)
+  async def search_ideas_by_category(
+    self,
+    ctx: SlashContext
+  ) -> None:
+    """Search ideas."""
+    user = ctx.user.global_name
+    server = ctx.guild
+    channel = ctx.channel
+    server_name = server.name if server and isinstance(server.name, str) else None
+    channel_name = channel.name if channel and isinstance(channel.name, str) else None
+    ideas = retrieve_ideas(
+      self._db.engine,
+      server=server_name,
+      channel=channel_name,
+      user=user,
+    )
+    component = create_category_search_form(ideas)
+    await ctx.send("Search your ideas", components=component)
 
 
 def create_name_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
@@ -74,20 +99,3 @@ def create_category_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
     custom_id="category_select"
   )
 
-
-search_ideas_categories_config = SlashCommand(
-  name="search",
-  description="Search my ideas",
-  callback=search_ideas_by_category,
-  sub_cmd_name="categories",
-  sub_cmd_description="Search by category"
-)
-search_ideas_names_config = SlashCommand(
-  name="search",
-  description="Search my ideas",
-  callback=search_ideas_by_name,
-  sub_cmd_name="name",
-  sub_cmd_description="Search by name"
-)
-
-print(dir(search_ideas_categories_config))

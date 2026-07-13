@@ -1,10 +1,10 @@
-from src.listeners import add_component_listener, add_mention_listener
+from src.db import IdeabotDatabase
+from src.listeners import ComponentsListener, MentionsListener
 import logging
 from src.commands import (
-  remember_idea_config,
-  fetch_ideas_config,
-  search_ideas_categories_config,
-  search_ideas_names_config
+  FetchIdeas,
+  RememberIdea,
+  SearchIdeas,
 )
 from src.bot import create_bot
 from src.util import get_token
@@ -19,10 +19,17 @@ logger = logging.getLogger(__name__)
 logger.info("Commands imported.")
 logger.info("Creating bot.")
 bot = create_bot()
-logger.info("Adding listener.")
-add_component_listener(bot)
-add_mention_listener(bot)
-logger.info("Listener added.")
+logger.info("Creating DB.")
+db = IdeabotDatabase()
+logger.info("DB Created.")
+logger.info("Adding commands...")
+fetch_command = FetchIdeas(db, bot)
+save_idea_command = RememberIdea(db, bot)
+search_idea_command = SearchIdeas(db, bot)
+logger.info("Adding listeners...")
+components_listener = ComponentsListener(bot, db)
+mentions_listener = MentionsListener(bot, db)
+logger.info("Listeners added.")
 logger.info("Starting bot up.")
 bot.start(token=get_token())
 
