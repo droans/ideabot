@@ -1,5 +1,6 @@
 """Save Ideas."""
-from src.db import IdeabotDatabase, add_idea
+from src.database.tasks import add_idea
+from src.database import IdeabotDatabase
 import logging
 from src.models import IdeaModel
 
@@ -65,11 +66,11 @@ class RememberIdea:
       if not user_name:
         raise ValueError("Can't discern username.")
       logger.debug(f"Guild: {guild}")
-      logger.info(f"Server Name: {server_name}")
+      logger.debug(f"Server Name: {server_name}")
       logger.debug(f"Channel: {channel}")
-      logger.info(f"Channel Name: {channel_name}")
+      logger.debug(f"Channel Name: {channel_name}")
       logger.info(f"User Name: {user_name}")
-      logger.info(f"Idea: {idea}")
+      logger.debug(f"Idea: {idea}")
       idea_model = IdeaModel(
         server=server_name,
         channel=channel_name,
@@ -90,5 +91,3 @@ class RememberIdea:
       return
     await ctx.send(f"👎 \n\n{error_message}")
   
-
-logger.info("Commands imported.")

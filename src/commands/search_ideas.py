@@ -1,7 +1,8 @@
-from src.db import IdeabotDatabase, retrieve_ideas
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 import logging
 from interactions import StringSelectMenu, SlashContext, SlashCommand, Client
-from src.models import IdeaModel
+from src.models import IdeaModel, IdeaFilterModelWithUser
 
 logger = logging.getLogger(__name__)
 
@@ -32,15 +33,20 @@ class SearchIdeas:
   ) -> None:
     """Search ideas."""
     user = ctx.user.global_name
+    if not user:
+      raise ValueError("Can't determine user!")
     server = ctx.guild
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModelWithUser(
       server=server_name,
       channel=channel_name,
       user=user,
+    )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter
     )
     component = create_name_search_form(ideas)
     await ctx.send("Search your ideas", components=component)
@@ -52,15 +58,20 @@ class SearchIdeas:
   ) -> None:
     """Search ideas."""
     user = ctx.user.global_name
+    if not user:
+      raise ValueError("Can't determine user!")
     server = ctx.guild
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModelWithUser(
       server=server_name,
       channel=channel_name,
       user=user,
+    )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter,
     )
     component = create_category_search_form(ideas)
     await ctx.send("Search your ideas", components=component)

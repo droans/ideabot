@@ -77,6 +77,80 @@ Result: Ideabot remembers that you saved the idea "Let's take over the world" wi
 
 Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control".
 
+## API
+
+Ideabot comes with a built-in API which binds to `0.0.0.0:12345`. All endpoints require a key. All `/admin` endpoints require a key belonging to an admin.
+
+If the database does not yet exist, a key will be generated for you and displayed in the logs. 
+
+### Authenticating
+
+Authentication is passed via the `Authorization` header with the value `Bearer <KEY>`.  User is determined from the key.
+
+### Endpoints:
+
+#### `/ideas/get`
+
+**Description:** Retrieve your ideas.
+
+**Parameters:**
+
+| Name         | Type             | Required | Description           | 
+|--------------|------------------|----------|-----------------------|
+| idea_name    | str \| list[str] | no       | Name(s) to search     |
+| category     | str \| list[str] | no       | Category(s) to search |
+| server_name  | str \| list[str] | no       | Server(s) to search   |
+| channel_name | str \| list[str] | no       | Channel(s) to search  |
+
+
+**Successful response schema:**
+
+```json
+[
+  {
+    "server": "string",
+    "channel": "string",
+    "idea": "string",
+    "user": "string",
+    "category": "string",
+    "idea_name": "string"
+  }
+]
+```
+
+#### `/ideas/create`
+
+**Description:** Create a new idea.
+
+**Parameters:**
+
+| Name         | Type | Required | Description                       | 
+|--------------|------|----------|-----------------------------------|
+| idea         | str  | yes      | Idea you are adding               |
+| idea_name    | str  | no       | Name to give the idea             |
+| category     | str  | no       | Category for the idea             |
+| server_name  | str  | no       | Discord server to store the idea  |
+| channel_name | str  | no       | Discord channel to store the idea |
+
+**Successful response:** No response.
+
+
+#### `/admin/add_user`
+
+**Description:** Create a new API user.
+
+Note: Creating an API user is NOT required to use the bot. Anyone on the server can still interact with it and their ideas will be stored under their user name. However, they will be unable to retrieve their ideas unless an account is created using their global Discord username.
+
+**Parameters:**
+
+| Name         | Type | Required | Description                   | 
+|--------------|------|----------|-------------------------------|
+| user_name    | str  | yes      | Name of user to create        |
+| admin        | bool | no       | Whether user has admin powers |
+
+**Successful response:** String containing API key. Key can never be recovered after this. 
+
+
 ## Creating and using the bot
 
 1. Navigate to the [Discord Developer's Portal](https://discord.com/developers/applications). Create a new application and name it "ideabot" (or any other name you would prefer).

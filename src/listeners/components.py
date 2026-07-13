@@ -1,5 +1,7 @@
+from src.models import IdeaFilterModelWithUser
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 import logging
-from src.db import IdeabotDatabase, retrieve_ideas
 from src.util import format_ideas
 from interactions import Guild, Client, Listener
 from interactions.api.events import Component
@@ -20,11 +22,6 @@ class ComponentsListener:
     """Respond to search request."""
     ctx = event.ctx
     component_id = ctx.custom_id
-    kwargs = {}
-    if component_id == "name_select":
-      kwargs["name"] = ctx.values
-    if component_id == "category_select":
-      kwargs["category"] = event.ctx.values
     guild = ctx.guild
     server_name = guild.name if isinstance(guild, Guild) else ""
     channel = ctx.channel
@@ -36,12 +33,19 @@ class ComponentsListener:
     user_name = user.global_name
     if not user_name:
       raise ValueError("Can't discern user name")
+    filter = IdeaFilterModelWithUser(
+    server=server_name,
+    channel=channel_name,
+    user=user_name,
+  )
+    if component_id == "name_select":
+      filter.idea_name = ctx.values
+      # kwargs["name"] = ctx.values
+    if component_id == "category_select":
+      filter.category = event.ctx.values
     ideas = retrieve_ideas(
       engine=self._db.engine,
-      server=server_name,
-      channel=channel_name,
-      user=user_name,
-      **kwargs,
+      filters=filter,
     )
     await ctx.send(format_ideas(ideas))
 

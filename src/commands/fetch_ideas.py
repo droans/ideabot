@@ -1,5 +1,7 @@
 """Fetch ideas."""
-from src.db import IdeabotDatabase, retrieve_ideas
+from src.models import IdeaFilterModelWithUser
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 from src.util import format_ideas
 
 from interactions import SlashContext, SlashCommandOption, OptionType, SlashCommand, Client
@@ -39,25 +41,23 @@ class FetchIdeas:
   ) -> None:
     """Fetch ideas."""
     user = ctx.user.global_name
+    if not user:
+      raise ValueError("Can't determine user!")
     server = ctx.guild
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    ideas = retrieve_ideas(
-      self._db.engine,
+    filter = IdeaFilterModelWithUser(
       server=server_name,
       channel=channel_name,
       user=user,
       category=category,
-      name=idea_name
+      idea_name=idea_name,
     )
-    # ideas = filter_ideas(
-    #   server=server_name,
-    #   channel=channel_name,
-    #   user=user,
-    #   category=category,
-    #   name=idea_name
-    # )
+    ideas = retrieve_ideas(
+      self._db.engine,
+      filter,
+    )
     await ctx.send(format_ideas(ideas))
 
 
