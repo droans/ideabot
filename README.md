@@ -33,11 +33,24 @@ Replies with all filtered ideas.
 
 **Arguments:**
 
-| Argument | Type | Required | Description                                 |
-|----------|------|----------|---------------------------------------------|
-| idea     | str  | yes      | The description of your idea                |
-| name     | str  | no       | An optional name to give to your idea       |
-| category | str  | no       | An optional category to assign to your idea |
+| Argument | Type | Required | Description                   |
+|----------|------|----------|-------------------------------|
+| name     | str  | no       | Name of idea to filter on     |
+| category | str  | no       | Category of idea to filter on |
+
+
+#### `/dump`
+
+Dump all your ideas as a JSON file.
+
+**Arguments:**
+
+| Argument     | Type | Required | Description                                   |
+|--------------|------|----------|-----------------------------------------------|
+| idea_name    | str  | no       | Name of idea to filter on                     |
+| category     | str  | no       | Category of idea to filter on                 |
+| all_channels | bool | no       | Return ideas from all channels. Default False |
+| all_servers  | bool | no       | Return ideas from all servers. Default False  |
 
 #### `/search name`
 

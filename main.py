@@ -9,7 +9,7 @@ import logging
 from src.commands import (
   FetchIdeas,
   RememberIdea,
-  SearchIdeas,
+  SearchIdeas, DumpIdeas,
 )
 from src.bot import create_bot
 from src.util import get_token
@@ -33,6 +33,7 @@ async def lifespan(app: FastAPI):
   FetchIdeas(db, bot)
   RememberIdea(db, bot)
   SearchIdeas(db, bot)
+  DumpIdeas(db, bot)
   logger.info("Commands imported.")
   logger.info("Creating bot.")
   logger.info("Creating DB.")
