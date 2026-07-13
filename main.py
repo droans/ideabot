@@ -1,4 +1,4 @@
-from src.db import IdeabotDatabase
+from src.database import IdeabotDatabase
 from src.listeners import ComponentsListener, MentionsListener
 import logging
 from src.commands import (

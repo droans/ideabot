@@ -1,5 +1,6 @@
+from src.database.tasks import add_idea
+from src.database import IdeabotDatabase
 from sqlalchemy import Engine
-from src.db import IdeabotDatabase, add_idea
 import re
 from typing import cast
 from src.models import IdeaModel

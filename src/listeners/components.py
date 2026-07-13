@@ -1,5 +1,6 @@
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 import logging
-from src.db import IdeabotDatabase, retrieve_ideas
 from src.util import format_ideas
 from interactions import Guild, Client, Listener
 from interactions.api.events import Component

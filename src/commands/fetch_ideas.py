@@ -1,5 +1,6 @@
 """Fetch ideas."""
-from src.db import IdeabotDatabase, retrieve_ideas
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 from src.util import format_ideas
 
 from interactions import SlashContext, SlashCommandOption, OptionType, SlashCommand, Client

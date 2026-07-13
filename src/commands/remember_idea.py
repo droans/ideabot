@@ -1,5 +1,6 @@
 """Save Ideas."""
-from src.db import IdeabotDatabase, add_idea
+from src.database.tasks import add_idea
+from src.database import IdeabotDatabase
 import logging
 from src.models import IdeaModel
 

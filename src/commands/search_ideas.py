@@ -1,4 +1,5 @@
-from src.db import IdeabotDatabase, retrieve_ideas
+from src.database.tasks import retrieve_ideas
+from src.database import IdeabotDatabase
 import logging
 from interactions import StringSelectMenu, SlashContext, SlashCommand, Client
 from src.models import IdeaModel
