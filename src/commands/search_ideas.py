@@ -45,13 +45,10 @@ def create_name_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
   """Creates a form for the user to filter which items to select."""
   names = ["All"]
   _all_names = [idea.idea_name for idea in ideas if idea.idea_name]
-  logger.info(f"All ideas: {ideas}")
   for idea in ideas:
     name = idea.idea_name
     if name and name not in names:
       names.append(name)
-  logger.info(f"Search names: {", ".join(names)}")
-  logger.info(f"All names: {", ".join(_all_names)}")
   return StringSelectMenu(
     *names,
     placeholder="Select Name",
@@ -65,13 +62,10 @@ def create_category_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
   """Creates a form for the user to filter which items to select."""
   categories = ["All"]
   _all_categories = [idea.category for idea in ideas if idea.category]
-  logger.info(f"All ideas: {ideas}")
   for idea in ideas:
     category = idea.category
     if category and category not in categories:
       categories.append(category)
-  logger.info(f"Search categories: {", ".join(categories)}")
-  logger.info(f"All categories: {", ".join(_all_categories)}")
   return StringSelectMenu(
     *categories,
     placeholder="Select Category",

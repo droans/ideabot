@@ -18,8 +18,6 @@ async def remember_idea(
   error_message = ""
   try:
     logger.info("Got idea command!")
-    logger.info(ctx)
-    logger.info(dir(ctx))
     guild = ctx.guild
     if isinstance(guild, Guild):
       server_name = guild.name
@@ -32,9 +30,9 @@ async def remember_idea(
     user_name = user.global_name
     if not user_name:
       raise ValueError("Can't discern username.")
-    logger.info(f"Guild: {guild}")
+    logger.debug(f"Guild: {guild}")
     logger.info(f"Server Name: {server_name}")
-    logger.info(f"Channel: {channel}")
+    logger.debug(f"Channel: {channel}")
     logger.info(f"Channel Name: {channel_name}")
     logger.info(f"User Name: {user_name}")
     logger.info(f"Idea: {idea}")
@@ -46,13 +44,13 @@ async def remember_idea(
       category=category,
       idea_name=name,
     )
-    logger.info(f"Saving idea {idea_model}")
+    logger.debug(f"Saving idea {idea_model}")
     save_idea(idea_model)
     result = True
   except Exception as e:  # noqa: E722
     result = False
     error_message = str(e)
-    logger.info(e)
+    logger.exception(e)
   if result:
     await ctx.send("👍")
     return

@@ -61,23 +61,23 @@ def filter_ideas(
   ideas = get_ideas()
   if server:
     servers = _coerce_list(server)
-    logger.info(f"Filtering on server `{servers}`")
+    logger.debug(f"Filtering on server `{servers}`")
     ideas = [idea for idea in ideas if idea.server in servers]
   if channel:
     channels = _coerce_list(channel)
-    logger.info(f"Filtering on channel `{channels}`")
+    logger.debug(f"Filtering on channel `{channels}`")
     ideas = [idea for idea in ideas if idea.channel in channels]
   if user:
     users = _coerce_list(user)
-    logger.info(f"Filtering on user `{users}`")
+    logger.debug(f"Filtering on user `{users}`")
     ideas = [idea for idea in ideas if idea.user in users]
   if category:
     categories = _coerce_list(category)
-    logger.info(f"Filtering on category `{categories}`")
+    logger.debug(f"Filtering on category `{categories}`")
     ideas = [idea for idea in ideas if idea.category in categories]
   if name:
     names = _coerce_list(name)
-    logger.info(f"Filtering on name `{names}`")
+    logger.debug(f"Filtering on name `{names}`")
     ideas = [idea for idea in ideas if idea.idea_name in names]
   return ideas
 

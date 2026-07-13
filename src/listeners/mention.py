@@ -10,24 +10,23 @@ logger = logging.getLogger(__name__)
 
 async def on_message(event: MessageCreate) -> None:
   """Receive bot mentions"""
-  logger.info("On message.")
   message = event.message
   users = []
   async for user in message.mention_users:
     users.append(user.id)
   bot_user = event.client.user.id
-  logger.info(f"Bot user {bot_user} {"" if bot_user in users else "not"} in users {users}")
+  logger.debug(f"Bot user {bot_user} {"" if bot_user in users else "not"} in users {users}")
   if bot_user not in users:
     return
-  logger.info(f"Got message {message}")
+  logger.debug(f"Got message {message}")
   if message.author.bot:
-    logger.info("Got bot message, ignoring")
+    logger.debug("Got bot message, ignoring")
     return
   
   original_message = await message.fetch_referenced_message()
   if original_message:
     _save_replied_message(original_message=original_message, reply=message, bot_user_id=int(bot_user))
-    logger.info(original_message.content)
+    logger.debug(original_message.content)
     await message.add_reaction("\U0001F44D")
 
 def add_mention_listener(bot: Client) -> Listener:
@@ -67,12 +66,12 @@ def parse_category_and_idea_name_from_reply(reply_content: str, bot_user_id: int
   regex = re.compile(rf"\<@{bot_user_id}\>")
   reply_content = regex.sub("", reply_content).strip()
 
-  logger.info(f"Parsing category, name for {reply_content}")
+  logger.debug(f"Parsing category, name for {reply_content}")
   if not len(reply_content):
-    logger.info("No category, idea name passed")
+    logger.debug("No category, idea name passed")
     return None, None
   if "," not in reply_content:
-    logger.info(f"Category: {reply_content}")
+    logger.debug(f"Category: {reply_content}")
     return reply_content, None
   result = tuple(reply_content.split(",", maxsplit=1))
   print(f"Category: {result[0]}, idea name: {result[1]}")
