@@ -2,14 +2,14 @@
 import logging
 from sqlalchemy.orm import Session
 from src.util import _coerce_list
-from src.models import IdeasTable, IdeaModel, IdeaFilterModel
+from src.models import IdeasTable, IdeaModel, IdeaFilterModelWithUser
 from sqlalchemy import Engine, select, insert
 
 logger = logging.getLogger(__name__)
 
 def retrieve_ideas(
   engine: Engine,
-  filters: IdeaFilterModel,
+  filters: IdeaFilterModelWithUser,
 ):
   """Retrieve ideas from database."""
   stmt = select(

@@ -12,14 +12,17 @@ class IdeaModel(BaseModel):
   category: str | None = None
   idea_name: str | None = None
 
-
-class IdeaFilterModel(BaseModel):
+class BaseIdeaFilterModel(BaseModel):
   """Model for filtering ideas."""
-  user: str | list[str] | None = None
   server: str | list[str] | None = None
   channel: str | list[str] | None = None
   category: str | list[str] | None = None
   idea_name: str | list[str] | None = None
+
+
+class IdeaFilterModelWithUser(BaseIdeaFilterModel):
+  """Model for filtering ideas by user."""
+  user: str | list[str] | None = None
 
 
 class Base(DeclarativeBase):

@@ -2,7 +2,7 @@ from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 import logging
 from interactions import StringSelectMenu, SlashContext, SlashCommand, Client
-from src.models import IdeaModel, IdeaFilterModel
+from src.models import IdeaModel, IdeaFilterModelWithUser
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +37,7 @@ class SearchIdeas:
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    filter = IdeaFilterModel(
+    filter = IdeaFilterModelWithUser(
       server=server_name,
       channel=channel_name,
       user=user,
@@ -60,7 +60,7 @@ class SearchIdeas:
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
     channel_name = channel.name if channel and isinstance(channel.name, str) else None
-    filter = IdeaFilterModel(
+    filter = IdeaFilterModelWithUser(
       server=server_name,
       channel=channel_name,
       user=user,

@@ -1,4 +1,4 @@
-from src.models import IdeaFilterModel
+from src.models import IdeaFilterModelWithUser
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 import logging
@@ -33,7 +33,7 @@ class ComponentsListener:
     user_name = user.global_name
     if not user_name:
       raise ValueError("Can't discern user name")
-    filter = IdeaFilterModel(
+    filter = IdeaFilterModelWithUser(
     server=server_name,
     channel=channel_name,
     user=user_name,
