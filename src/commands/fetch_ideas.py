@@ -41,6 +41,8 @@ class FetchIdeas:
   ) -> None:
     """Fetch ideas."""
     user = ctx.user.global_name
+    if not user:
+      raise ValueError("Can't determine user!")
     server = ctx.guild
     channel = ctx.channel
     server_name = server.name if server and isinstance(server.name, str) else None
