@@ -43,6 +43,9 @@ def retrieve_ideas(
     if filters.idea_name and not filters.idea_name == "All":
         name = _coerce_list(filters.idea_name)
         stmt = stmt.where(IdeasTable.idea_name.in_(name))
+    if filters.idea and not filters.idea == "All":
+        idea = _coerce_list(filters.idea)
+        stmt = stmt.where(IdeasTable.idea.in_(idea))
     with Session(engine) as session:
         result = session.execute(stmt).all()
         return [IdeaModel.model_validate(idea._asdict()) for idea in result]

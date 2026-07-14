@@ -23,6 +23,7 @@ class BaseIdeaFilterModel(BaseModel):
     channel: str | list[str] | None = None
     category: str | list[str] | None = None
     idea_name: str | list[str] | None = None
+    idea: str | list[str] | None = None
 
 
 class IdeaFilterModelWithUser(BaseIdeaFilterModel):
