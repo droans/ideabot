@@ -1,5 +1,6 @@
 import dataclasses
-from src.const import SearchComponentIDs
+from src.database.tasks.ideas import delete_ideas
+from src.const import DeleteComponentIDs, SearchComponentIDs
 from src.models import IdeaFilterModelWithUser
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
@@ -37,6 +38,7 @@ class ComponentsListener:
         if not user_name:
             raise ValueError("Can't discern user name")
         search_components = dataclasses.asdict(SearchComponentIDs()).values()
+        delete_components = dataclasses.asdict(DeleteComponentIDs()).values()
         if component_id in search_components:
             await self.handle_search_ideas(
                 ctx,
@@ -46,6 +48,14 @@ class ComponentsListener:
                 component_id,
                 ctx.values,
             )
+        elif component_id in delete_components:
+            await self.handle_delete_idea(
+                ctx,
+                user_name,
+                component_id,
+                ctx.values,
+            )
+
     async def handle_search_ideas(
         self,
         ctx: ComponentContext,
@@ -53,9 +63,11 @@ class ComponentsListener:
         server_name: str,
         channel_name: str,
         component: str,
-        filters: list[str]
+        filters: list[str],
     ) -> None:
-        logger.info(f"Got search request for user {user} with filters {', '.join(filters)}")
+        logger.info(
+            f"Got search request for user {user} with filters {', '.join(filters)}"
+        )
         filter = IdeaFilterModelWithUser(
             server=server_name,
             channel=channel_name,
@@ -69,8 +81,45 @@ class ComponentsListener:
             engine=self._db.engine,
             filters=filter,
         )
-        logger.info(f"Sending back ideas {','.join([idea.idea_name or "" for idea in ideas])}")
+        logger.info(
+            f"Sending back ideas {','.join([idea.idea_name or '' for idea in ideas])}"
+        )
         await ctx.send(format_ideas(ideas))
+
+    async def handle_delete_idea(
+        self, ctx: ComponentContext, user: str, component: str, idea_filters: list[str]
+    ) -> None:
+        """Delete ideas."""
+        logger.info(
+            f"Got delete request for user {user} with filters {','.join(idea_filters)}"
+        )
+        result = True
+        filter = IdeaFilterModelWithUser(
+            user=user,
+        )
+        _idea_filters = [
+            _filter[:-3] for _filter in idea_filters if _filter.endswith("...")
+        ]
+        if component == DeleteComponentIDs.IDEA:
+            filter.idea = _idea_filters
+        elif component == DeleteComponentIDs.NAME:
+            filter.idea_name = _idea_filters
+        elif component == DeleteComponentIDs.SERVER:
+            filter.server = _idea_filters
+        elif component == DeleteComponentIDs.CHANNEL:
+            filter.channel = _idea_filters
+        elif component == DeleteComponentIDs.CATEGORY:
+            filter.category = _idea_filters
+        try:
+            delete_ideas(self._db.engine, filter)
+        except Exception as e:
+            result = False
+            error_message = str(e)
+            logger.exception(e)
+        if result:
+            await ctx.send("👍")
+            return
+        await ctx.send(f"👎 \n\n{error_message}")
 
     def add_component_listener(self) -> Listener:
         """Subscribes the mention listener to the bot."""

@@ -10,7 +10,7 @@ from src.models import (
     IdeaFilterModelWithUser,
     IdeaFilterModelWithAPIKey,
 )
-from sqlalchemy import Engine, select, insert
+from sqlalchemy import Engine, select, insert, delete
 
 logger = logging.getLogger(__name__)
 
@@ -73,3 +73,33 @@ def add_idea(engine: Engine, idea: IdeaModel):
         session.execute(stmt, [idea.model_dump()])
         session.commit()
     logger.info("Added idea to database.")
+
+
+def delete_ideas(
+    engine: Engine,
+    filters: IdeaFilterModelWithUser,
+) -> None:
+    """Delete ideas from database."""
+    stmt = delete(IdeasTable)
+
+    if filters.server and not filters.server == "All":
+        server = _coerce_list(filters.server)
+        stmt = stmt.where(IdeasTable.server.in_(server))
+    if filters.channel and not filters.channel == "All":
+        channel = _coerce_list(filters.channel)
+        stmt = stmt.where(IdeasTable.channel.in_(channel))
+    if filters.user and not filters.user == "All":
+        user = _coerce_list(filters.user)
+        stmt = stmt.where(IdeasTable.user.in_(user))
+    if filters.category and not filters.category == "All":
+        category = _coerce_list(filters.category)
+        stmt = stmt.where(IdeasTable.category.in_(category))
+    if filters.idea_name and not filters.idea_name == "All":
+        name = _coerce_list(filters.idea_name)
+        stmt = stmt.where(IdeasTable.idea_name.in_(name))
+    if filters.idea and not filters.idea == "All":
+        idea = _coerce_list(filters.idea)
+        stmt = stmt.where(IdeasTable.idea.in_(idea))
+    with Session(engine) as session:
+        session.execute(stmt)
+        session.commit()

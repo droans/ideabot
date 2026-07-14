@@ -62,6 +62,10 @@ Search ideas by idea name. The bot will give you a dropdown so you can select th
 
 Search ideas by idea category. The bot will give you a dropdown so you can select the idea category/categories.
 
+#### `/forget`
+
+Delete ideas by name, category, server, channel, or the idea itself. `/forget` works the same as `/search` but with additional options for server, channel, and idea.
+
 ### Mentions
 
 You won't always have the idea. Or you might but you don't want to (or forget) to use the slash command. Fortunately, there's another option.
