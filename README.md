@@ -66,6 +66,11 @@ Search ideas by idea category. The bot will give you a dropdown so you can selec
 
 Delete ideas by name, category, server, channel, or the idea itself. `/forget` works the same as `/search` but with additional options for server, channel, and idea.
 
+
+#### `/ideabot-help`
+
+Get help for Ideabot or specific commands. You can use `ideabot-help help` to get help for Ideabot. You may also use `ideabot-help <command>` for any slash-command.
+
 ### Mentions
 
 You won't always have the idea. Or you might but you don't want to (or forget) to use the slash command. Fortunately, there's another option.
