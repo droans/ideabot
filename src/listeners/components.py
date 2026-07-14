@@ -5,7 +5,7 @@ from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 import logging
 from src.util import format_ideas
-from interactions import Guild, Client, Listener
+from interactions import Guild, Client, Listener, ComponentContext
 from interactions.api.events import Component
 
 logger = logging.getLogger(__name__)
@@ -36,19 +36,40 @@ class ComponentsListener:
         user_name = user.global_name
         if not user_name:
             raise ValueError("Can't discern user name")
+        search_components = dataclasses.asdict(SearchComponentIDs()).values()
+        if component_id in search_components:
+            await self.handle_search_ideas(
+                ctx,
+                user_name,
+                server_name,
+                channel_name,
+                component_id,
+                ctx.values,
+            )
+    async def handle_search_ideas(
+        self,
+        ctx: ComponentContext,
+        user: str,
+        server_name: str,
+        channel_name: str,
+        component: str,
+        filters: list[str]
+    ) -> None:
+        logger.info(f"Got search request for user {user} with filters {', '.join(filters)}")
         filter = IdeaFilterModelWithUser(
             server=server_name,
             channel=channel_name,
-            user=user_name,
+            user=user,
         )
-        if component_id == SearchComponentIDs.NAME:
-            filter.idea_name = ctx.values
-        if component_id == SearchComponentIDs.CATEGORY:
-            filter.category = event.ctx.values
+        if component == SearchComponentIDs.NAME:
+            filter.idea_name = filters
+        if component == SearchComponentIDs.CATEGORY:
+            filter.category = filters
         ideas = retrieve_ideas(
             engine=self._db.engine,
             filters=filter,
         )
+        logger.info(f"Sending back ideas {','.join([idea.idea_name or "" for idea in ideas])}")
         await ctx.send(format_ideas(ideas))
 
     def add_component_listener(self) -> Listener:
