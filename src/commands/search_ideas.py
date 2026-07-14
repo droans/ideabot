@@ -47,7 +47,7 @@ class SearchIdeas:
             user=user,
         )
         ideas = retrieve_ideas(self._db.engine, filter)
-        component = create_name_search_form(ideas)
+        component = create_name_search_form(ideas, "name_select")
         await ctx.send("Search your ideas", components=component)
 
     async def search_ideas_by_category(self, ctx: SlashContext) -> None:
@@ -70,14 +70,13 @@ class SearchIdeas:
             self._db.engine,
             filter,
         )
-        component = create_category_search_form(ideas)
+        component = create_category_search_form(ideas, "category_select")
         await ctx.send("Search your ideas", components=component)
 
 
-def create_name_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
+def create_name_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
     """Creates a form for the user to filter which items to select."""
     names = ["All"]
-    _all_names = [idea.idea_name for idea in ideas if idea.idea_name]
     for idea in ideas:
         name = idea.idea_name
         if name and name not in names:
@@ -87,14 +86,13 @@ def create_name_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
         placeholder="Select Name",
         min_values=0,
         max_values=len(names),
-        custom_id="name_select",
+        custom_id=form_id,
     )
 
 
-def create_category_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
+def create_category_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
     """Creates a form for the user to filter which items to select."""
     categories = ["All"]
-    _all_categories = [idea.category for idea in ideas if idea.category]
     for idea in ideas:
         category = idea.category
         if category and category not in categories:
@@ -104,5 +102,5 @@ def create_category_search_form(ideas: list[IdeaModel]) -> StringSelectMenu:
         placeholder="Select Category",
         min_values=0,
         max_values=len(categories),
-        custom_id="category_select",
+        custom_id=form_id,
     )
