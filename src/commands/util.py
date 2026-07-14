@@ -1,7 +1,21 @@
 """Utilities for commands."""
 
-from interactions import StringSelectMenu
-from src.models import IdeaModel
+from interactions import StringSelectMenu, SlashContext
+from src.models import IdeaModel, ContextModel
+
+
+def get_context(ctx: SlashContext) -> ContextModel:
+    """Creates ContextModel from context."""
+    server = ctx.guild
+    channel = ctx.channel
+    server_name = server.name if server and isinstance(server.name, str) else None
+    channel_name = channel.name if channel and isinstance(channel.name, str) else None
+    user = ctx.user.global_name or ""
+    return ContextModel(
+        server=server_name,
+        channel=channel_name,
+        user=user,
+    )
 
 
 def create_name_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
@@ -20,7 +34,9 @@ def create_name_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelec
     )
 
 
-def create_category_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
+def create_category_search_form(
+    ideas: list[IdeaModel], form_id: str
+) -> StringSelectMenu:
     """Creates a form for the user to filter which items to select."""
     categories = ["All"]
     for idea in ideas:

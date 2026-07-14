@@ -1,5 +1,7 @@
 """Save Ideas."""
 
+from src.commands.util import get_context
+
 from src.database.tasks import add_idea
 from src.database import IdeabotDatabase
 import logging
@@ -7,7 +9,6 @@ from src.models import IdeaModel
 
 from interactions import (
     SlashContext,
-    Guild,
     SlashCommandOption,
     OptionType,
     SlashCommand,
@@ -70,30 +71,20 @@ class RememberIdea:
         result = False
         error_message = ""
         try:
+            context = get_context(ctx)
+            if not context.user:
+                raise ValueError("Can't determine user!")
+            assert isinstance(context.server, str)
+            assert isinstance(context.channel, str)
             logger.info("Got idea command!")
-            guild = ctx.guild
-            if isinstance(guild, Guild):
-                server_name = guild.name
-            else:
-                server_name = ""
-            channel = ctx.channel
-            if isinstance(channel.name, str):
-                channel_name = channel.name
-            user = ctx.user
-            user_name = user.global_name
-            if not user_name:
-                raise ValueError("Can't discern username.")
-            logger.debug(f"Guild: {guild}")
-            logger.debug(f"Server Name: {server_name}")
-            logger.debug(f"Channel: {channel}")
-            logger.debug(f"Channel Name: {channel_name}")
-            logger.info(f"User Name: {user_name}")
-            logger.debug(f"Idea: {idea}")
+            logger.debug(f"Server Name: {context.server}")
+            logger.debug(f"Channel Name: {context.channel}")
+            logger.info(f"User Name: {context.user}")
             idea_model = IdeaModel(
-                server=server_name,
-                channel=channel_name,
+                server=context.server,
+                channel=context.channel,
                 idea=idea,
-                user=user_name,
+                user=context.user,
                 category=category,
                 idea_name=name,
             )

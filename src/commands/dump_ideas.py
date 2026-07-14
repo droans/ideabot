@@ -1,3 +1,4 @@
+from src.commands.util import get_context
 import json
 from src.database.tasks import retrieve_ideas
 from src.models import IdeaFilterModelWithUser
@@ -61,28 +62,24 @@ class DumpIdeas:
         all_channels: bool = False,
     ) -> None:
         """Dump all ideas to a JSON file and send as attachment."""
-        user = ctx.user.global_name
-        if not user:
-            raise ValueError("Cannot determine user!")
-        filter = IdeaFilterModelWithUser(user=user)
-        server = ctx.guild
-        channel = ctx.channel
-        server_name = server.name if server and isinstance(server.name, str) else None
-        channel_name = (
-            channel.name if channel and isinstance(channel.name, str) else None
-        )
+        context = get_context(ctx)
+        if not context.user:
+            raise ValueError("Can't determine user!")
+        filter = IdeaFilterModelWithUser(user=context.user)
+
         if idea_name:
             filter.idea_name = idea_name
         if category:
             filter.category = category
-        if not server_name and not all_servers:
+        if not context.server and not all_servers:
             raise ValueError("Cannot get server name!")
-        if not channel_name and not all_channels:
+        if not context.channel and not all_channels:
             raise ValueError("Cannot get channel name!")
         if not all_servers:
-            filter.server = server_name
+            filter.server = context.server
         if not all_channels:
-            filter.channel = channel_name
+            filter.channel = context.channel
+
         data = retrieve_ideas(self._db.engine, filter)
         dumped = json.dumps([idea.model_dump() for idea in data])
         with open("/tmp/ideas.json", "w") as f:

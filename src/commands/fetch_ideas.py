@@ -1,5 +1,7 @@
 """Fetch ideas."""
 
+from src.commands.util import get_context
+
 from src.models import IdeaFilterModelWithUser
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
@@ -49,19 +51,13 @@ class FetchIdeas:
         category: str | None = None,
     ) -> None:
         """Fetch ideas."""
-        user = ctx.user.global_name
-        if not user:
+        context = get_context(ctx)
+        if not context.user:
             raise ValueError("Can't determine user!")
-        server = ctx.guild
-        channel = ctx.channel
-        server_name = server.name if server and isinstance(server.name, str) else None
-        channel_name = (
-            channel.name if channel and isinstance(channel.name, str) else None
-        )
         filter = IdeaFilterModelWithUser(
-            server=server_name,
-            channel=channel_name,
-            user=user,
+            server=context.server,
+            channel=context.channel,
+            user=context.user,
             category=category,
             idea_name=idea_name,
         )

@@ -1,3 +1,8 @@
+from src.commands.util import (
+    create_category_search_form,
+    create_name_search_form,
+    get_context,
+)
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
 import logging
@@ -32,19 +37,13 @@ class SearchIdeas:
 
     async def search_ideas_by_name(self, ctx: SlashContext) -> None:
         """Search ideas."""
-        user = ctx.user.global_name
-        if not user:
+        context = get_context(ctx)
+        if not context.user:
             raise ValueError("Can't determine user!")
-        server = ctx.guild
-        channel = ctx.channel
-        server_name = server.name if server and isinstance(server.name, str) else None
-        channel_name = (
-            channel.name if channel and isinstance(channel.name, str) else None
-        )
         filter = IdeaFilterModelWithUser(
-            server=server_name,
-            channel=channel_name,
-            user=user,
+            server=context.server,
+            channel=context.channel,
+            user=context.user,
         )
         ideas = retrieve_ideas(self._db.engine, filter)
         component = create_name_search_form(ideas, "name_select")
@@ -52,19 +51,13 @@ class SearchIdeas:
 
     async def search_ideas_by_category(self, ctx: SlashContext) -> None:
         """Search ideas."""
-        user = ctx.user.global_name
-        if not user:
+        context = get_context(ctx)
+        if not context.user:
             raise ValueError("Can't determine user!")
-        server = ctx.guild
-        channel = ctx.channel
-        server_name = server.name if server and isinstance(server.name, str) else None
-        channel_name = (
-            channel.name if channel and isinstance(channel.name, str) else None
-        )
         filter = IdeaFilterModelWithUser(
-            server=server_name,
-            channel=channel_name,
-            user=user,
+            server=context.server,
+            channel=context.channel,
+            user=context.user,
         )
         ideas = retrieve_ideas(
             self._db.engine,
@@ -72,5 +65,3 @@ class SearchIdeas:
         )
         component = create_category_search_form(ideas, "category_select")
         await ctx.send("Search your ideas", components=component)
-
-
