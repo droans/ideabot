@@ -6,8 +6,8 @@ from .remember_idea import RememberIdea
 from .search_ideas import SearchIdeas
 
 __all__ = (
-  "DumpIdeas",
-  "FetchIdeas",
-  "RememberIdea",
-  "SearchIdeas",
+    "DumpIdeas",
+    "FetchIdeas",
+    "RememberIdea",
+    "SearchIdeas",
 )

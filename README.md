@@ -13,7 +13,7 @@ Discord bot for saving ideas
 
 #### `/idea`
 
-Store your idea. The user, channel, and server are automatically picked up from context. Replies with a thumbs-up emoji 
+Store your idea. The user, channel, and server are automatically picked up from context. Replies with a thumbs-up emoji
 
 Replies with a Thumbs-up emoji if successful. If there's an error, it will reply with a thumbs-down emoji and a message.
 
@@ -96,13 +96,13 @@ Result: Ideabot remembers that you saved the idea "Let's take over the world" wi
 ↳ @you: @ideabot domination, World Control @thirduser @fourthuser
 ```
 
-Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control". It also saves it for @thirduser and @fourthuser. 
+Result: Ideabot remembers that you saved the idea "Let's take over the world" with the category "domination" and name "World Control". It also saves it for @thirduser and @fourthuser.
 
 ## API
 
 Ideabot comes with a built-in API which binds to `0.0.0.0:12345`. All endpoints require a key. All `/admin` endpoints require a key belonging to an admin.
 
-If the database does not yet exist, a key will be generated for you and displayed in the logs. 
+If the database does not yet exist, a key will be generated for you and displayed in the logs.
 
 ### Authenticating
 
@@ -116,7 +116,7 @@ Authentication is passed via the `Authorization` header with the value `Bearer <
 
 **Parameters:**
 
-| Name         | Type             | Required | Description           | 
+| Name         | Type             | Required | Description           |
 |--------------|------------------|----------|-----------------------|
 | idea_name    | str \| list[str] | no       | Name(s) to search     |
 | category     | str \| list[str] | no       | Category(s) to search |
@@ -145,7 +145,7 @@ Authentication is passed via the `Authorization` header with the value `Bearer <
 
 **Parameters:**
 
-| Name         | Type | Required | Description                       | 
+| Name         | Type | Required | Description                       |
 |--------------|------|----------|-----------------------------------|
 | idea         | str  | yes      | Idea you are adding               |
 | idea_name    | str  | no       | Name to give the idea             |
@@ -164,22 +164,22 @@ Note: Creating an API user is NOT required to use the bot. Anyone on the server 
 
 **Parameters:**
 
-| Name         | Type | Required | Description                   | 
+| Name         | Type | Required | Description                   |
 |--------------|------|----------|-------------------------------|
 | user_name    | str  | yes      | Name of user to create        |
 | admin        | bool | no       | Whether user has admin powers |
 
-**Successful response:** String containing API key. Key can never be recovered after this. 
+**Successful response:** String containing API key. Key can never be recovered after this.
 
 
 ## Creating and using the bot
 
 1. Navigate to the [Discord Developer's Portal](https://discord.com/developers/applications). Create a new application and name it "ideabot" (or any other name you would prefer).
 2. In the Discord Developer's Portal page for your bot, navigate to "Installation". Set the install link to "None" and save.
-3. Navigate to the "Bot" tab. Enable "Message Content Intent" and save. 
+3. Navigate to the "Bot" tab. Enable "Message Content Intent" and save.
 4. Still in the "Bot" tab, copy the token listed under "Token". If it is not visible, click "Reset Token" and follow the prompt. Save this and never share it - this is the private Discord token that we will need to set up the container.
 5. Use the [docker-compose.yml](./docker-compose.yml) file to help you set up your container. The environment variable `DISCORD_TOKEN` will be the token from the previous step. Go ahead and spin this up.
-6. Back in the Discord Developer's Portal, navigate to the "OAuth2" tab: 
+6. Back in the Discord Developer's Portal, navigate to the "OAuth2" tab:
   a. In the "OAuth2 URL Generator" section, select the scopes "bot" and "applications.commands"
-  b. In the "Bot Permissions" section, select "Manage Messages", "Read Message History", and "Use Slash Commands". 
+  b. In the "Bot Permissions" section, select "Manage Messages", "Read Message History", and "Use Slash Commands".
 7. Navigate to the URL generated at the bottom and grant your bot permission on the proper server.
