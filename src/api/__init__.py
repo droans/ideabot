@@ -2,6 +2,4 @@
 
 from .api import IdeabotAPI
 
-__all__ = (
-  "IdeabotAPI",
-)
+__all__ = ("IdeabotAPI",)
