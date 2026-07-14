@@ -50,3 +50,57 @@ def create_category_search_form(
         max_values=len(categories),
         custom_id=form_id,
     )
+
+
+def create_idea_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
+    """Creates a form for the user to filter which items to select."""
+    idea_descs = ["All"]
+    for idea in ideas:
+        idea = idea.idea
+        if idea and idea not in idea_descs:
+            idea_descs.append(idea)
+    return StringSelectMenu(
+        *idea_descs,
+        placeholder="Select Idea",
+        min_values=0,
+        max_values=len(idea_descs),
+        custom_id=form_id,
+    )
+
+
+def create_server_search_form(ideas: list[IdeaModel], form_id: str) -> StringSelectMenu:
+    """Creates a form for the user to filter which items to select."""
+    servers = ["All"]
+    for idea in ideas:
+        server = idea.server
+        if not server:
+            server = "Unknown"
+        if server and server not in servers:
+            servers.append(server)
+    return StringSelectMenu(
+        *servers,
+        placeholder="Select Server",
+        min_values=0,
+        max_values=len(servers),
+        custom_id=form_id,
+    )
+
+
+def create_channel_search_form(
+    ideas: list[IdeaModel], form_id: str
+) -> StringSelectMenu:
+    """Creates a form for the user to filter which items to select."""
+    channels = ["All"]
+    for idea in ideas:
+        channel = idea.channel
+        if not channel:
+            channel = "Unknown"
+        if channel and channel not in channels:
+            channels.append(channel)
+    return StringSelectMenu(
+        *channels,
+        placeholder="Select Channel",
+        min_values=0,
+        max_values=len(channels),
+        custom_id=form_id,
+    )

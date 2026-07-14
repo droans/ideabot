@@ -11,6 +11,7 @@ from src.commands import (
     RememberIdea,
     SearchIdeas,
     DumpIdeas,
+    DeleteIdeas,
 )
 from src.bot import create_bot
 from src.util import get_token
@@ -35,6 +36,7 @@ async def lifespan(app: FastAPI):
     RememberIdea(db, bot)
     SearchIdeas(db, bot)
     DumpIdeas(db, bot)
+    DeleteIdeas(db, bot)
     logger.info("Commands imported.")
     logger.info("Creating bot.")
     logger.info("Creating DB.")

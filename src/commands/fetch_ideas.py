@@ -65,4 +65,7 @@ class FetchIdeas:
             self._db.engine,
             filter,
         )
+        if not len(ideas):
+            await ctx.send("Both of our minds are completely empty and carefree 🤗")
+            return
         await ctx.send(format_ideas(ideas))
