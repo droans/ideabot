@@ -1,3 +1,5 @@
+import dataclasses
+from src.const import SearchComponentIDs
 from src.models import IdeaFilterModelWithUser
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
@@ -39,10 +41,9 @@ class ComponentsListener:
             channel=channel_name,
             user=user_name,
         )
-        if component_id == "name_select":
+        if component_id == SearchComponentIDs.NAME:
             filter.idea_name = ctx.values
-            # kwargs["name"] = ctx.values
-        if component_id == "category_select":
+        if component_id == SearchComponentIDs.CATEGORY:
             filter.category = event.ctx.values
         ideas = retrieve_ideas(
             engine=self._db.engine,

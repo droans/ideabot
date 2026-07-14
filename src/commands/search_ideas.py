@@ -1,3 +1,4 @@
+from src.const import SearchComponentIDs
 from src.commands.util import (
     create_category_search_form,
     create_name_search_form,
@@ -46,7 +47,7 @@ class SearchIdeas:
             user=context.user,
         )
         ideas = retrieve_ideas(self._db.engine, filter)
-        component = create_name_search_form(ideas, "name_select")
+        component = create_name_search_form(ideas, SearchComponentIDs.NAME)
         await ctx.send("Search your ideas", components=component)
 
     async def search_ideas_by_category(self, ctx: SlashContext) -> None:
@@ -63,5 +64,5 @@ class SearchIdeas:
             self._db.engine,
             filter,
         )
-        component = create_category_search_form(ideas, "category_select")
+        component = create_category_search_form(ideas, SearchComponentIDs.CATEGORY)
         await ctx.send("Search your ideas", components=component)
