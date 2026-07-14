@@ -69,3 +69,11 @@ class UserTable(Base):
         CheckConstraint("admin in (0,1)"),
         nullable=False,
     )
+
+
+class ContextModel(BaseModel):
+    """Model for context information."""
+
+    server: str | list[str] | None = None
+    channel: str | list[str] | None = None
+    user: str
