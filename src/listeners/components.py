@@ -1,6 +1,6 @@
 import dataclasses
 from src.database.tasks.ideas import delete_ideas
-from src.const import DeleteComponentIDs, SearchComponentIDs
+from src.const import ForgetComponentIDs, SearchComponentIDs
 from src.models import IdeaFilterModelWithUser
 from src.database.tasks import retrieve_ideas
 from src.database import IdeabotDatabase
@@ -39,7 +39,7 @@ class ComponentsListener:
         if not user_name:
             raise ValueError("Can't discern user name")
         search_components = dataclasses.asdict(SearchComponentIDs()).values()
-        delete_components = dataclasses.asdict(DeleteComponentIDs()).values()
+        delete_components = dataclasses.asdict(ForgetComponentIDs()).values()
         if component_id in search_components:
             await self.handle_search_ideas(
                 ctx,
@@ -101,15 +101,15 @@ class ComponentsListener:
         _idea_filters = [
             _filter[:-3] for _filter in idea_filters if _filter.endswith("...")
         ]
-        if component == DeleteComponentIDs.IDEA:
+        if component == ForgetComponentIDs.IDEA:
             filter.idea = _idea_filters
-        elif component == DeleteComponentIDs.NAME:
+        elif component == ForgetComponentIDs.NAME:
             filter.idea_name = _idea_filters
-        elif component == DeleteComponentIDs.SERVER:
+        elif component == ForgetComponentIDs.SERVER:
             filter.server = _idea_filters
-        elif component == DeleteComponentIDs.CHANNEL:
+        elif component == ForgetComponentIDs.CHANNEL:
             filter.channel = _idea_filters
-        elif component == DeleteComponentIDs.CATEGORY:
+        elif component == ForgetComponentIDs.CATEGORY:
             filter.category = _idea_filters
         try:
             delete_ideas(self._db.engine, filter)

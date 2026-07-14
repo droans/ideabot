@@ -1,15 +1,15 @@
 """Slash commands."""
 
-from .delete_idea import DeleteIdeas
+from .forget_idea import ForgetIdeas
 from .dump_ideas import DumpIdeas
 from .remember_ideas import FetchIdeas
 from .save_idea import RememberIdea
 from .search_ideas import SearchIdeas
 
 __all__ = (
-    "DeleteIdeas",
     "DumpIdeas",
     "FetchIdeas",
+    "ForgetIdeas",
     "RememberIdea",
     "SearchIdeas",
 )

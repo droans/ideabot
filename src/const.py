@@ -8,12 +8,12 @@ SQLITE_CONN_PROTO = "sqlite+pysqlite:///"
 
 
 @dataclass(frozen=True)
-class DeleteComponentIDs:
-    IDEA: str = "idea_delete"
-    NAME: str = "name_delete"
-    SERVER: str = "server_delete"
-    CHANNEL: str = "channel_delete"
-    CATEGORY: str = "category_delete"
+class ForgetComponentIDs:
+    IDEA: str = "idea_forget"
+    NAME: str = "name_forget"
+    SERVER: str = "server_forget"
+    CHANNEL: str = "channel_forget"
+    CATEGORY: str = "category_forget"
 
 
 @dataclass(frozen=True)
