@@ -24,6 +24,7 @@ class ComponentsListener:
 
     async def on_component(self, event: Component) -> None:
         """Respond to search request."""
+        logger.info("Got component request.")
         ctx = event.ctx
         component_id = ctx.custom_id
         guild = ctx.guild
