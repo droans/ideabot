@@ -106,3 +106,11 @@ class GithubDeviceFlowOAuthExceptionResponseModel(BaseModel):
     error: str
     error_description: str
     error_uri: str
+
+
+class GithubUserTokenExceptionResponseModel(BaseModel):
+    """Model for an exception response when attempting to get user."""
+
+    message: str
+    documentation_url: str
+    status: str
