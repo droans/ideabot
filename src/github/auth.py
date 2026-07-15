@@ -17,6 +17,12 @@ def get_client_id() -> str | None:
     return client_id
 
 
+def get_gh_token() -> str | None:
+    load_dotenv()
+    gh_token = os.environ.get("GH_TOKEN")
+    return gh_token
+
+
 def parse_gh_device_flow_init_response(
     response_json: dict,
 ) -> GithubDeviceFlowInitRequestModel:
