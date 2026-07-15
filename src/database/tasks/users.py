@@ -33,6 +33,16 @@ def validate_key_for_admin(engine: Engine, key: str) -> bool:
     return result._asdict()["admin"]
 
 
+def user_exists(engine, username: str) -> bool:
+    """Check if a user exists."""
+    stmt = select(UserTable.name).where(UserTable.name == username)
+    with Session(engine) as session:
+        result = session.execute(stmt).one_or_none()
+    if not result:
+        return False
+    return True
+
+
 def hash_key(key: str):
     """Hashes and salts the key passed."""
     result = hashlib.sha256(key.encode("utf-8")).hexdigest()
