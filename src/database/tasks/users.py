@@ -68,7 +68,7 @@ def user_exists(engine, username: str) -> bool:
 
 def hash_key(key: str):
     """Hashes and salts the key passed."""
-    result = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    result = hashlib.sha3_512(key.encode("utf-8")).hexdigest()
     del key
     return result
 
