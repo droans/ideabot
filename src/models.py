@@ -71,6 +71,7 @@ class UserTable(Base):
         CheckConstraint("admin in (0,1)"),
         nullable=False,
     )
+    github_account: Mapped[str] = mapped_column(TEXT, nullable=True)
 
 
 class ContextModel(BaseModel):
