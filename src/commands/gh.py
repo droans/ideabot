@@ -1,5 +1,9 @@
 """Manage GH commands."""
 
+import re
+from github import Github
+from sqlalchemy import Engine
+
 import logging
 from src.database.tasks.users import add_github_account, get_github_account
 from src.github.auth import get_github_user_from_token, is_github_enabled
@@ -128,3 +132,32 @@ Please restart the auth flow.
         gh_account = get_github_account(self._db.engine, discord_user)
         if gh_account is None:
             await ctx.respond("")
+
+
+def post_issue_to_github(
+    engine: Engine,
+    discord_user: str,
+    git_repo: str,
+    idea_name: str | None,
+    idea: str,
+    gh: Github,
+) -> str | None:
+    """Post an issue to a public Git repo under the user's account."""
+    gh_account = get_github_account(engine, discord_user)
+    regex = re.compile(r"[a-zA-Z0-9_\-.]+/[a-zA-Z0-9_\-.]+")
+    if gh_account is None:
+        return f"No Github account is linked for user {discord_user}"
+    if not regex.fullmatch(git_repo):
+        return f"Repo {git_repo} doesn't match the expected pattern {regex.pattern}. If this is wrong, please let my idiot @droans know."
+    repo_owner = git_repo.split("/")[0]
+    if repo_owner != gh_account:
+        return f"Repo {git_repo} is owned by the account {repo_owner}. I can only submit issues to repos directly owned by your account."
+    try:
+        repo = gh.get_repo(git_repo)
+    except:  # noqa: E722
+        return f"Can't access repo {git_repo}. Is it possible that it doesn't exist?"
+    if not idea_name:
+        idea_name = f"Idea: {idea[:50]}"
+        if len(idea) > 50:
+            idea_name += "..."
+    repo.create_issue(title=idea_name, body=idea)
