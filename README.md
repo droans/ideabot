@@ -19,12 +19,13 @@ Replies with a Thumbs-up emoji if successful. If there's an error, it will reply
 
 **Arguments:**
 
-| Argument    | Type | Required | Description                                                       |
-|-------------|------|----------|-------------------------------------------------------------------|
-| idea        | str  | yes      | The description of your idea                                      |
-| name        | str  | no       | An optional name to give to your idea                             |
-| category    | str  | no       | An optional category to assign to your idea                       |
-| shared_with | str  | no       | Add the idea to another user's ideas list in addition to your own |
+| Argument    | Type | Required | Description                                                                                     |
+|-------------|------|----------|-------------------------------------------------------------------------------------------------|
+| idea        | str  | yes      | The description of your idea                                                                    |
+| name        | str  | no       | An optional name to give to your idea                                                           |
+| category    | str  | no       | An optional category to assign to your idea                                                     |
+| shared_with | str  | no       | Add the idea to another user's ideas list in addition to your own                               |
+| repo        | str  | no       | Submit the idea as an issue to your repo. [See below for more information](#github-integration) |
 
 #### `/remember`
 
@@ -70,6 +71,10 @@ Delete ideas by name, category, server, channel, or the idea itself. `/forget` w
 #### `/ideabot-help`
 
 Get help for Ideabot or specific commands. You can use `ideabot-help help` to get help for Ideabot. You may also use `ideabot-help <command>` for any slash-command.
+
+#### `/ideabot`
+
+General Ideabot commands. Currently only has support for adding your Github account. [See below for more information.](#github-integration)
 
 ### Mentions
 
@@ -180,6 +185,31 @@ Note: Creating an API user is NOT required to use the bot. Anyone on the server 
 
 **Successful response:** String containing API key. Key can never be recovered after this.
 
+
+## Github Integration
+
+This bot also allows you to integrate with Github so you can upload an idea as an issue to your Github repository.
+
+### Requirements:
+#### Bot owner
+1. Create a new Github OAuth app. Use whatever URL you would like for the homepage and authorization callback. Check the box labeled "Enable Device Flow"
+2. Copy the Client ID. Add it as the environment variable `GH_CLIENT_ID`.
+3. Create a new Github Token (classic). Grant it the `public_repo` permission. Copy the token and add it as the environment variable `GH_TOKEN`.
+
+#### Users
+As the bot will only allow you to submit issues to repositories owned directly by you (under your Github username), you first must authenticate your account.
+
+**NOTE**: Only your Github username will be stored. The access token is only used to get your account name and is immediately deleted afterwards.
+
+Authentication is performed by directly messaging the bot. The bot will refuse authentication attempts performed in any normal server or channel.
+
+**Authentication**
+1. Begin a new direct message with ideabot
+2. Send the command `/ideabot init-gh-auth`
+3. Follow the instructions in the reply.
+4. When finished, send back the command `ideabot finish-gh-auth`.
+
+The bot will respond if the operation was a success or if there were any errors.
 
 ## Creating and using the bot
 

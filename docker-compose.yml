@@ -6,3 +6,7 @@ services:
       - path/to/ideabot/ideas.json:/app/ideas.json
     environment:
       DISCORD_TOKEN: ${IDEABOT_DISCORD_TOKEN}
+
+      # Optional - Github integration
+      GH_TOKEN: ${IDEABOT_GH_TOKEN}
+      GH_CLIENT_ID: ${IDEABOT_APP_CLIENT_ID}
