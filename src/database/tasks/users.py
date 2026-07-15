@@ -6,7 +6,7 @@ import secrets
 
 from sqlalchemy.orm import Session
 from src.models import UserTable
-from sqlalchemy import select, Engine
+from sqlalchemy import select, Engine, update
 
 
 def validate_key_return_user(engine: Engine, key: str) -> str | None:
@@ -31,6 +31,17 @@ def validate_key_for_admin(engine: Engine, key: str) -> bool:
     if not result:
         return False
     return result._asdict()["admin"]
+
+
+def add_github_account(engine: Engine, username: str, github_account: str) -> None:
+    """Connect a user's Github account."""
+    if not user_exists(engine, username):
+        add_user(engine, username, admin=False, github_account=github_account, add_api_key=False)
+        return
+    stmt = update(UserTable).where(UserTable.name==username).values(github_account=github_account)
+    with Session(engine) as session:
+        session.execute(stmt)
+        session.commit()
 
 
 def user_exists(engine, username: str) -> bool:
