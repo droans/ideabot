@@ -50,7 +50,13 @@ def hash_key(key: str):
     return result
 
 
-def add_user(engine: Engine, name: str, admin: bool, add_api_key: bool = False) -> str:
+def add_user(
+    engine: Engine,
+    name: str,
+    admin: bool,
+    github_account: str | None = None,
+    add_api_key: bool = False
+) -> str:
     """Add user and key."""
     _insert = insert(UserTable)
     key = secrets.token_urlsafe(32)
@@ -59,9 +65,12 @@ def add_user(engine: Engine, name: str, admin: bool, add_api_key: bool = False) 
         set_={
             "name": _insert.excluded.name,
             **({"apikey": _insert.excluded.apikey,} if add_api_key else {}),
+            **({"github_account": _insert.excluded.github_account,} if github_account else {}),
         },
     )
     data = {"name": name, "apikey": hash_key(key), "admin": admin}
+    if github_account:
+        data["github_account"] = github_account
     with Session(engine) as session:
         session.execute(stmt, [data])
         session.commit()
