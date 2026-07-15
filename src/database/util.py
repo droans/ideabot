@@ -28,4 +28,5 @@ def create_user_table(engine: Engine) -> str:
         engine=engine,
         name="admin",
         admin=True,
+        add_api_key=True,
     )

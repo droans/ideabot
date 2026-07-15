@@ -40,15 +40,15 @@ def hash_key(key: str):
     return result
 
 
-def add_user(engine: Engine, name: str, admin: bool) -> str:
+def add_user(engine: Engine, name: str, admin: bool, add_api_key: bool = False) -> str:
     """Add user and key."""
-    key = secrets.token_urlsafe(32)
     _insert = insert(UserTable)
+    key = secrets.token_urlsafe(32)
     stmt = _insert.on_conflict_do_update(
         index_elements=["name"],
         set_={
             "name": _insert.excluded.name,
-            "apikey": _insert.excluded.apikey,
+            **({"apikey": _insert.excluded.apikey,} if add_api_key else {}),
         },
     )
     data = {"name": name, "apikey": hash_key(key), "admin": admin}

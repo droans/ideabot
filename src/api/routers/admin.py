@@ -38,7 +38,7 @@ class AdminRouter(RouterBase):
         ) -> str:
             """Create a new user."""
             logger.info(f"Got add_users request with user {user}")
-            return add_user(self._db.engine, user_name, admin)
+            return add_user(self._db.engine, user_name, admin, add_api_key=True)
 
         self.router.add_api_route(
             "/add_user",
