@@ -7,6 +7,7 @@ import urllib.parse
 from src.models import (
     GithubDeviceFlowInitRequestModel,
     GithubDeviceFlowOAuthResponseModel,
+    GithubDeviceFlowOAuthExceptionResponseModel,
 )
 
 def is_github_enabled() -> bool:
@@ -49,7 +50,7 @@ def init_gh_auth() -> GithubDeviceFlowInitRequestModel:
     return parse_gh_device_flow_init_response(r.json())
 
 
-def check_token(device_code: str) -> GithubDeviceFlowOAuthResponseModel:
+def check_token(device_code: str) -> GithubDeviceFlowOAuthResponseModel | GithubDeviceFlowOAuthExceptionResponseModel:
     url = "https://github.com/login/oauth/access_token"
     data = {
         "client_id": get_client_id(),
@@ -59,4 +60,7 @@ def check_token(device_code: str) -> GithubDeviceFlowOAuthResponseModel:
     hdrs = {"Content-Type": "application/json", "Accept": "application/json"}
     r = requests.post(url, json=data, headers=hdrs, timeout=10)
     r.raise_for_status()
-    return GithubDeviceFlowOAuthResponseModel.model_validate(r.json())
+    response_json = r.json()
+    if response_json.get("error"):
+        return GithubDeviceFlowOAuthExceptionResponseModel.model_validate(response_json)
+    return GithubDeviceFlowOAuthResponseModel.model_validate(response_json)

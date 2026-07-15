@@ -98,3 +98,11 @@ class GithubDeviceFlowOAuthResponseModel(BaseModel):
     access_token: str
     token_type: Literal["bearer"] = "bearer"
     scope: Literal["read:user"] = "read:user"
+
+
+class GithubDeviceFlowOAuthExceptionResponseModel(BaseModel):
+    """Model for an oauth exception response."""
+
+    error: str
+    error_description: str
+    error_uri: str
