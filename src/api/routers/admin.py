@@ -1,6 +1,7 @@
 """Router for idea management."""
 
-from src.database.util import add_user
+from src.database.tasks import add_user
+
 from typing import Callable
 from src.database import IdeabotDatabase
 from fastapi import FastAPI, APIRouter, Depends

@@ -1,9 +1,12 @@
 """Tasks related to users."""
 
+import hashlib
+from sqlalchemy.dialects.sqlite import insert
+import secrets
+
 from sqlalchemy.orm import Session
 from src.models import UserTable
 from sqlalchemy import select, Engine
-from src.database.util import hash_key
 
 
 def validate_key_return_user(engine: Engine, key: str) -> str | None:
@@ -28,3 +31,28 @@ def validate_key_for_admin(engine: Engine, key: str) -> bool:
     if not result:
         return False
     return result._asdict()["admin"]
+
+
+def hash_key(key: str):
+    """Hashes and salts the key passed."""
+    result = hashlib.sha256(key.encode("utf-8")).hexdigest()
+    del key
+    return result
+
+
+def add_user(engine: Engine, name: str, admin: bool) -> str:
+    """Add user and key."""
+    key = secrets.token_urlsafe(32)
+    _insert = insert(UserTable)
+    stmt = _insert.on_conflict_do_update(
+        index_elements=["name"],
+        set_={
+            "name": _insert.excluded.name,
+            "apikey": _insert.excluded.apikey,
+        },
+    )
+    data = {"name": name, "apikey": hash_key(key), "admin": admin}
+    with Session(engine) as session:
+        session.execute(stmt, [data])
+        session.commit()
+    return key
