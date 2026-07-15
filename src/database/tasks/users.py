@@ -1,5 +1,7 @@
 """Tasks related to users."""
 
+from typing import cast
+
 import hashlib
 from sqlalchemy.dialects.sqlite import insert
 import secrets
@@ -36,9 +38,19 @@ def validate_key_for_admin(engine: Engine, key: str) -> bool:
 def add_github_account(engine: Engine, username: str, github_account: str) -> None:
     """Connect a user's Github account."""
     if not user_exists(engine, username):
-        add_user(engine, username, admin=False, github_account=github_account, add_api_key=False)
+        add_user(
+            engine,
+            username,
+            admin=False,
+            github_account=github_account,
+            add_api_key=False,
+        )
         return
-    stmt = update(UserTable).where(UserTable.name==username).values(github_account=github_account)
+    stmt = (
+        update(UserTable)
+        .where(UserTable.name == username)
+        .values(github_account=github_account)
+    )
     with Session(engine) as session:
         session.execute(stmt)
         session.commit()
@@ -66,7 +78,7 @@ def add_user(
     name: str,
     admin: bool,
     github_account: str | None = None,
-    add_api_key: bool = False
+    add_api_key: bool = False,
 ) -> str:
     """Add user and key."""
     _insert = insert(UserTable)
@@ -75,8 +87,20 @@ def add_user(
         index_elements=["name"],
         set_={
             "name": _insert.excluded.name,
-            **({"apikey": _insert.excluded.apikey,} if add_api_key else {}),
-            **({"github_account": _insert.excluded.github_account,} if github_account else {}),
+            **(
+                {
+                    "apikey": _insert.excluded.apikey,
+                }
+                if add_api_key
+                else {}
+            ),
+            **(
+                {
+                    "github_account": _insert.excluded.github_account,
+                }
+                if github_account
+                else {}
+            ),
         },
     )
     data = {"name": name, "apikey": hash_key(key), "admin": admin}
@@ -86,3 +110,13 @@ def add_user(
         session.execute(stmt, [data])
         session.commit()
     return key
+
+
+def get_github_account(engine: Engine, discord_user: str) -> str | None:
+    """Get the Github account connected to a user."""
+    stmt = select(UserTable.github_account).where(UserTable.name == discord_user)
+    with Session(engine) as session:
+        result = session.execute(stmt).one_or_none()
+    if result is not None:
+        result = cast(str, result._asdict()["github_account"])
+    return result
