@@ -9,6 +9,12 @@ from src.models import (
     GithubDeviceFlowOAuthResponseModel,
 )
 
+def is_github_enabled() -> bool:
+    client_id = get_client_id()
+    gh_token = get_gh_token()
+    if not client_id or not gh_token:
+        return False
+    return True
 
 def get_client_id() -> str | None:
     """Return the token set in the .env file."""
