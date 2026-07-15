@@ -191,3 +191,20 @@ If you're being super annoying, you can also add a category and name for the ide
             await ctx.message.reply(response)
         else:
             await ctx.respond(response)
+
+    async def help_command_ideabot(self, ctx: SlashContext) -> None:
+        """Get help for the `/ideabot` command."""
+        logger.info("Got help request for /ideabot")
+        response = """## `/ideabot`
+**Description:** General ideabot commands. Currently only supports Github related commands
+
+### Usage:
+
+**/ideabot** init-gh-auth: Begin authentication process with Github
+**/ideabot** finish-gh-auth: Complete authentication process with Github
+
+NOTE: The Github commands can only be called in a direct message to Ideabot."""
+        if ctx.message:
+            await ctx.message.reply(response)
+        else:
+            await ctx.respond(response)

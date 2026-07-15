@@ -13,6 +13,7 @@ from src.commands import (
     DumpIdeas,
     ForgetIdeas,
     IdeabotHelp,
+    GithubCommand,
 )
 from src.bot import create_bot
 from src.util import get_token
@@ -39,6 +40,7 @@ async def lifespan(app: FastAPI):
     DumpIdeas(db, bot)
     ForgetIdeas(db, bot)
     IdeabotHelp(db, bot)
+    GithubCommand(db, bot)
     logger.info("Commands imported.")
     logger.info("Creating bot.")
     logger.info("Creating DB.")

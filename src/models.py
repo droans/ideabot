@@ -1,3 +1,4 @@
+from typing import Literal
 from sqlalchemy import CheckConstraint
 from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
@@ -70,6 +71,7 @@ class UserTable(Base):
         CheckConstraint("admin in (0,1)"),
         nullable=False,
     )
+    github_account: Mapped[str] = mapped_column(TEXT, nullable=True)
 
 
 class ContextModel(BaseModel):
@@ -78,3 +80,37 @@ class ContextModel(BaseModel):
     server: str | list[str] | None = None
     channel: str | list[str] | None = None
     user: str
+
+
+class GithubDeviceFlowInitRequestModel(BaseModel):
+    """Model for a response when initiating device flow."""
+
+    device_code: str
+    expires_in: int
+    interval: int
+    user_code: str
+    verification_uri: str
+
+
+class GithubDeviceFlowOAuthResponseModel(BaseModel):
+    """Model for a response validating access has been granted."""
+
+    access_token: str
+    token_type: Literal["bearer"] = "bearer"
+    scope: Literal["read:user"] = "read:user"
+
+
+class GithubDeviceFlowOAuthExceptionResponseModel(BaseModel):
+    """Model for an oauth exception response."""
+
+    error: str
+    error_description: str
+    error_uri: str
+
+
+class GithubUserTokenExceptionResponseModel(BaseModel):
+    """Model for an exception response when attempting to get user."""
+
+    message: str
+    documentation_url: str
+    status: str

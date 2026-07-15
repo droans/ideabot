@@ -1,40 +1,13 @@
 """Database utility functions."""
 
-from sqlalchemy.orm import Session
-from sqlalchemy.dialects.sqlite import insert
-import secrets
-import hashlib
+from src.database.tasks.users import add_user
+
 import logging
 from src.models import IdeasTable, UserTable
 from sqlalchemy import Engine, Index
 
 SALT = 12
 logger = logging.getLogger(__name__)
-
-
-def hash_key(key: str):
-    """Hashes and salts the key passed."""
-    result = hashlib.sha256(key.encode("utf-8")).hexdigest()
-    del key
-    return result
-
-
-def add_user(engine: Engine, name: str, admin: bool) -> str:
-    """Add user and key."""
-    key = secrets.token_urlsafe(32)
-    _insert = insert(UserTable)
-    stmt = _insert.on_conflict_do_update(
-        index_elements=["name"],
-        set_={
-            "name": _insert.excluded.name,
-            "apikey": _insert.excluded.apikey,
-        },
-    )
-    data = {"name": name, "apikey": hash_key(key), "admin": admin}
-    with Session(engine) as session:
-        session.execute(stmt, [data])
-        session.commit()
-    return key
 
 
 def create_idea_table(engine: Engine) -> None:
@@ -55,4 +28,5 @@ def create_user_table(engine: Engine) -> str:
         engine=engine,
         name="admin",
         admin=True,
+        add_api_key=True,
     )

@@ -1,6 +1,7 @@
 """Router for idea management."""
 
-from src.database.util import add_user
+from src.database.tasks import add_user
+
 from typing import Callable
 from src.database import IdeabotDatabase
 from fastapi import FastAPI, APIRouter, Depends
@@ -37,7 +38,7 @@ class AdminRouter(RouterBase):
         ) -> str:
             """Create a new user."""
             logger.info(f"Got add_users request with user {user}")
-            return add_user(self._db.engine, user_name, admin)
+            return add_user(self._db.engine, user_name, admin, add_api_key=True)
 
         self.router.add_api_route(
             "/add_user",

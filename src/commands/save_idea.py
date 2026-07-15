@@ -1,5 +1,9 @@
 """Save Ideas."""
 
+from src.commands.gh import post_issue_to_github
+from typing import cast
+from src.github.auth import get_gh_token, is_github_enabled
+from github import Github, Auth
 from src.commands.util import get_context
 
 from src.database.tasks import add_idea
@@ -25,6 +29,7 @@ class RememberIdea:
     def __init__(self, db: IdeabotDatabase, bot: Client):
         """Initialize class."""
         self._db = db
+
         _remember_idea_options = [
             SlashCommandOption(
                 name="idea",
@@ -51,6 +56,20 @@ class RememberIdea:
                 required=False,
             ),
         ]
+        self._github = None
+        if is_github_enabled():
+            logger.info("Github is enabled. Allowing it to be used to save ideas.")
+            _remember_idea_options.append(
+                SlashCommandOption(
+                    name="repo",
+                    description="Post as issue to GH repo",
+                    type=OptionType.STRING,
+                    required=False,
+                )
+            )
+            gh_auth = Auth.Token(token=cast(str, get_gh_token()))
+            self._github = Github(auth=gh_auth)
+
         remember_idea_config = SlashCommand(
             name="idea",
             description="Save my idea",
@@ -66,6 +85,7 @@ class RememberIdea:
         idea: str = "",
         name: str | None = None,
         shared_with: User | None = None,
+        repo: str | None = None,
     ) -> None:
         """Save your idea."""
         result = False
@@ -94,12 +114,23 @@ class RememberIdea:
                 logger.info(f"Got share with: {shared_with}")
                 idea_model.user = shared_with.global_name
                 add_idea(self._db.engine, idea_model)
+            if repo and self._github:
+                response = post_issue_to_github(
+                    engine=self._db.engine,
+                    discord_user=context.user,
+                    git_repo=repo,
+                    idea_name=name,
+                    idea=idea,
+                    gh=self._github,
+                )
+                if response:
+                    raise ValueError(response)
             result = True
         except Exception as e:  # noqa: E722
             result = False
             error_message = str(e)
             logger.exception(e)
-        if result:
-            await ctx.send("👍")
+        if not result:
+            await ctx.send(f"👎 \n\n{error_message}")
             return
-        await ctx.send(f"👎 \n\n{error_message}")
+        await ctx.send("👍")
