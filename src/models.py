@@ -1,3 +1,4 @@
+from typing import Literal
 from sqlalchemy import CheckConstraint
 from pydantic import BaseModel
 from sqlalchemy.orm import DeclarativeBase
@@ -78,3 +79,21 @@ class ContextModel(BaseModel):
     server: str | list[str] | None = None
     channel: str | list[str] | None = None
     user: str
+
+
+class GithubDeviceFlowInitRequestModel(BaseModel):
+    """Model for a response when initiating device flow."""
+
+    device_code: str
+    expires_in: int
+    interval: int
+    user_code: str
+    verification_uri: str
+
+
+class GithubDeviceFlowOAuthResponseModel(BaseModel):
+    """Model for a response validating access has been granted."""
+
+    access_token: str
+    token_type: Literal["bearer"] = "bearer"
+    scope: Literal["read:user"] = "read:user"
