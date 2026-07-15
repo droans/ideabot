@@ -10,11 +10,10 @@ from src.models import (
 )
 
 
-def get_client_id() -> str:
+def get_client_id() -> str | None:
     """Return the token set in the .env file."""
     load_dotenv()
     client_id = os.environ.get("GH_CLIENT_ID")
-    assert isinstance(client_id, str)
     return client_id
 
 
